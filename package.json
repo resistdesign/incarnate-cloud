@@ -18,7 +18,7 @@
   "scripts": {
     "test": "mocha --require resistdesign-babel-register --ui exports **/*.spec.jsx",
     "watch": "npm-watch",
-    "doc": "esdoc && cp CNAME docs/CNAME"
+    "doc": "esdoc && cp CNAME docs/CNAME && cp Header.jpg docs/Header.jpg"
   },
   "author": "Resist Design",
   "license": "MIT",
