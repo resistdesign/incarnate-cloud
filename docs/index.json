@@ -334,7 +334,7 @@
   },
   {
     "kind": "index",
-    "content": "![Incarnate Logo](/Header.jpg?raw=true \"Incarnate\")\n\n# Incarnate Cloud\n\nCloud Function Middleware for Incarnate\n\n## Install\n\n`npm i -S incarnate-cloud`\n\n## API Docs\n\nhttp://cloud.incarnate.resist.design\n\n## Usage\n\n```js\nimport {AWS} from 'incarnate-cloud';\n\nmodule.exports = {\n  handler: AWS(\n    {\n      subMap: {\n        package: {\n          subMap: {\n            service: {\n              factory: () => {\n                return {\n                  method: async arg1 => `Received: ${arg1}`\n                };\n              }\n            }\n          }\n        }\n      }\n    },\n    [\n      '/package/service/method'\n    ],\n    'https://example.com'\n  )\n};\n```\n",
+    "content": "![Incarnate Logo](/Header.jpg?raw=true \"Incarnate\")\n\n# Incarnate Cloud\n\nCloud Function Middleware for [Incarnate](http://incarnate.resist.design)\n\n## Install\n\n`npm i -S incarnate-cloud`\n\n## API Docs\n\nhttp://cloud.incarnate.resist.design\n\n## Usage\n\n```js\nimport {AWS} from 'incarnate-cloud';\n\nmodule.exports = {\n  handler: AWS(\n    {\n      subMap: {\n        package: {\n          subMap: {\n            service: {\n              factory: () => {\n                return {\n                  method: async arg1 => `Received: ${arg1}`\n                };\n              }\n            }\n          }\n        }\n      }\n    },\n    [\n      '/package/service/method'\n    ],\n    'https://example.com'\n  )\n};\n```\n",
     "longname": "/Users/ryan/Projects/incarnate-cloud/README.md",
     "name": "./README.md",
     "static": true,

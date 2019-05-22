@@ -2,7 +2,7 @@
 
 # Incarnate Cloud
 
-Cloud Function Middleware for Incarnate
+Cloud Function Middleware for [Incarnate](http://incarnate.resist.design)
 
 ## Install
 
