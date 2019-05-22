@@ -43,7 +43,7 @@ const getCleanHttpMethod = (method = 'POST') => `${method}`.toUpperCase();
  * Create an Incarnate managed Lambda handler.
  * @param {Object} incarnateConfig The incarnate configuration object.
  * @param {Array.<string>} allowedPaths A SECURITY measure to prevent access of values and methods outside of services.
- * @param {Object} allowedOrigin The allowed CORS origin return to `OPTIONS` requests.
+ * @param {Object} allowedOrigin The allowed CORS origin returned to `OPTIONS` requests.
  *
  * @returns {Function} The Lambda handler.
  * */
