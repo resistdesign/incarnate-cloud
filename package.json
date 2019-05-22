@@ -1,11 +1,36 @@
 {
   "name": "incarnate-cloud",
   "version": "0.0.0",
-  "description": "",
+  "description": "Cloud Function Middleware for Incarnate",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Resist Design",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "incarnate": "^5.2.1"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/resistdesign/incarnate-cloud.git"
+  },
+  "keywords": [
+    "JS",
+    "JavaScript",
+    "ECMAScript",
+    "Lambda",
+    "AWS",
+    "Cloud",
+    "Function",
+    "DI",
+    "Dependency",
+    "Injection",
+    "Routing"
+  ],
+  "bugs": {
+    "url": "https://github.com/resistdesign/incarnate-cloud/issues"
+  },
+  "homepage": "https://github.com/resistdesign/incarnate-cloud#readme"
 }
