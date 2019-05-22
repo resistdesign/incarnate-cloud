@@ -1,0 +1,27 @@
+{
+  "coverage": "20%",
+  "expectCount": 10,
+  "actualCount": 2,
+  "files": {
+    "src/Providers/AWS.jsx": {
+      "expectCount": 9,
+      "actualCount": 2,
+      "undocumentLines": [
+        4,
+        5,
+        21,
+        23,
+        27,
+        33,
+        40
+      ]
+    },
+    "src/index.jsx": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        3
+      ]
+    }
+  }
+}

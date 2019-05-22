@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">src/Providers/AWS.jsx | incarnate-cloud</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Cloud Function Middleware for Incarnate"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="incarnate-cloud"><meta property="twitter:description" content="Cloud Function Middleware for Incarnate"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/resistdesign/incarnate-cloud"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AWS">AWS</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">Providers</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-AWS">AWS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DEP_NAMES">DEP_NAMES</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/Providers/AWS.jsx</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Incarnate from &apos;incarnate&apos;;
+import ParseCookies from &apos;cookie&apos;;
+
+const PATH_DELIMITER = &apos;/&apos;;
+const METHODS = {
+  OPTIONS: &apos;OPTIONS&apos;
+};
+
+/**
+ * Built-in dependency names.
+ * */
+export const DEP_NAMES = {
+  INPUT: &apos;INPUT&apos;,
+  PACKAGES: &apos;PACKAGES&apos;,
+  HEADERS: &apos;HEADERS&apos;,
+  COOKIES: &apos;COOKIES&apos;,
+  PATH: &apos;PATH&apos;
+};
+
+// SECURITY: Don&apos;t call private methods on services.
+const getMethodNameIsPrivate = (methodName = &apos;&apos;) =&gt; methodName.charAt(0) === &apos;_&apos;;
+
+const getCleanPathParts = (path = &apos;&apos;) =&gt; path
+  .split(PATH_DELIMITER)
+  .filter(p =&gt; !!p);
+
+const getResponse = (statusCode = 200, value = undefined, headers = {}) =&gt; ({
+  statusCode,
+  headers: typeof value === &apos;undefined&apos; ? {...headers} : {&apos;Content-Type&apos;: &apos;application/json&apos;, ...headers},
+  body: typeof value === &apos;undefined&apos; ? &apos;&apos; : JSON.stringify(value, null, &apos;  &apos;)
+});
+
+const getCORSHeaders = (clientOrigin = &apos;&apos;) =&gt; ({
+  &apos;Access-Control-Allow-Origin&apos;: clientOrigin,
+  &apos;Access-Control-Allow-Headers&apos;: &apos;Origin, X-Requested-With, Content-Type, Accept, Authorization&apos;,
+  &apos;Access-Control-Allow-Methods&apos;: &apos;OPTIONS, HEAD, GET, POST, PUT, PATCH, DELETE&apos;,
+  &apos;Access-Control-Allow-Credentials&apos;: &apos;true&apos;
+});
+
+const getCleanHttpMethod = (method = &apos;POST&apos;) =&gt; `${method}`.toUpperCase();
+
+/**
+ * Create an Incarnate managed Lambda handler.
+ * @param {Object} incarnateConfig The incarnate configuration object.
+ * @param {Array.&lt;string&gt;} allowedPaths A SECURITY measure to prevent access of values and methods outside of services.
+ * @param {Object} allowedOrigin The allowed CORS origin return to `OPTIONS` requests.
+ *
+ * @returns {Function} The Lambda handler.
+ * */
+export default (incarnateConfig = {}, allowedPaths = [], allowedOrigin = &apos;&apos;) =&gt; {
+  const corsHeaders = getCORSHeaders(allowedOrigin);
+  const getResponseWithCORS = (statusCode = 200, value = undefined, headers = {}) =&gt; {
+    return getResponse(
+      statusCode,
+      value,
+      {
+        ...corsHeaders,
+        ...headers
+      }
+    );
+  };
+
+  return async (event) =&gt; {
+    const {
+      httpMethod = &apos;POST&apos;,
+      headers,
+      multiValueHeaders,
+      path = &apos;&apos;,
+      body: bodyString = &apos;[]&apos;
+    } = event;
+    const cleanHttpMethod = getCleanHttpMethod(httpMethod);
+
+    if (cleanHttpMethod === METHODS.OPTIONS) {
+      return getResponseWithCORS(200);
+    }
+
+    // SECURITY: IMPORTANT: Only expose allowed paths. (`/package/service/method`)
+    if (allowedPaths.indexOf(path) === -1) {
+      return getResponseWithCORS(404, {message: &apos;Not Found&apos;});
+    }
+
+    const body = JSON.parse(bodyString);
+    const {
+      subMap = {}
+    } = incarnateConfig;
+    const cleanPathParts = getCleanPathParts(path);
+    const cleanPath = cleanPathParts.join(PATH_DELIMITER);
+    const inc = new Incarnate({
+      ...incarnateConfig,
+      pathDelimiter: PATH_DELIMITER,
+      subMap: {
+        [DEP_NAMES.INPUT]: {
+          subMap: {
+            [DEP_NAMES.HEADERS]: {
+              factory: () =&gt; ({
+                ...headers,
+                ...multiValueHeaders
+              })
+            },
+            [DEP_NAMES.COOKIES]: {
+              dependencies: {
+                suppliedHeaders: DEP_NAMES.HEADERS
+              },
+              factory: ({suppliedHeaders = {}} = {}) =&gt; {
+                const {Cookie: cookieString = &apos;&apos;} = suppliedHeaders;
+
+                return ParseCookies(cookieString);
+              }
+            },
+            [DEP_NAMES.PATH]: {
+              factory: () =&gt; cleanPath
+            }
+          }
+        },
+        [DEP_NAMES.PACKAGES]: {
+          shared: {
+            [DEP_NAMES.INPUT]: DEP_NAMES.INPUT
+          },
+          subMap
+        }
+      }
+    });
+    const [packageName, serviceName, methodName] = cleanPathParts;
+    const methodNameIsPrivate = getMethodNameIsPrivate(methodName);
+    const args = body instanceof Array ? body : [];
+
+    if (!!packageName &amp;&amp; !!serviceName &amp;&amp; !!methodName &amp;&amp; !methodNameIsPrivate) {
+      const serviceInstance = (await inc.getResolvedPathAsync([
+        DEP_NAMES.PACKAGES,
+        packageName,
+        serviceName
+      ])) || {};
+      const {[methodName]: serviceMethod} = serviceInstance;
+
+      if (serviceMethod instanceof Function) {
+        try {
+          const returnValue = await serviceMethod(...args);
+
+          return getResponseWithCORS(200, returnValue);
+        } catch (error) {
+          const {message = &apos;&apos;} = error || {};
+
+          return getResponseWithCORS(500, {message});
+        }
+      } else {
+        return getResponseWithCORS(404, {message: &apos;Not Found&apos;});
+      }
+    } else {
+      return getResponseWithCORS(404, {message: &apos;Not Found&apos;});
+    }
+  };
+};
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

@@ -1,19 +1,4 @@
-# Incarnate Cloud
-
-Cloud Function Middleware for Incarnate
-
-## Install
-
-`npm i -S incarnate-cloud`
-
-## API Docs
-
-http://cloud.incarnate.resist.design
-
-## Usage
-
-```js
-import {AWS} from 'incarnate-cloud';
+import {AWS} from '../src';
 
 module.exports = {
   handler: AWS(
@@ -38,4 +23,3 @@ module.exports = {
     'https://example.com'
   )
 };
-```
