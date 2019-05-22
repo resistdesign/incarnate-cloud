@@ -1,0 +1,7 @@
+{
+  "httpMethod": "POST",
+  "body": "[\"Arguments in JSON\"]",
+  "path": "/package/service/method",
+  "headers": {},
+  "multiValueHeaders": {}
+}

@@ -2,7 +2,7 @@
   "name": "incarnate-cloud",
   "version": "0.0.0",
   "description": "Cloud Function Middleware for Incarnate",
-  "main": "index.js",
+  "main": "src/index.jsx",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,7 +11,10 @@
   "dependencies": {
     "incarnate": "^5.2.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "expect.js": "^0.3.1",
+    "mocha": "^6.1.4"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/resistdesign/incarnate-cloud.git"
