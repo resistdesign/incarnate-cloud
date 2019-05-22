@@ -3,6 +3,10 @@
   "version": "0.0.0",
   "description": "Cloud Function Middleware for Incarnate",
   "main": "src/index.jsx",
+  "files": [
+    "src/Providers/",
+    "src/index.jsx"
+  ],
   "watch": {
     "test": {
       "patterns": [
