@@ -125,11 +125,39 @@ export default (incarnateConfig = {}, allowedPaths = [], allowedOrigin = '') => 
     const args = body instanceof Array ? body : [];
 
     if (!!packageName && !!serviceName && !!methodName && !methodNameIsPrivate) {
-      const serviceInstance = (await inc.getResolvedPathAsync([
-        DEP_NAMES.PACKAGES,
-        packageName,
-        serviceName
-      ])) || {};
+      let serviceInstance = {};
+
+      try {
+        serviceInstance = await inc.getResolvedPathAsync([
+          DEP_NAMES.PACKAGES,
+          packageName,
+          serviceName
+        ]);
+      } catch (error) {
+        const {
+          message,
+          source: {
+            error: {
+              message: sourceMessage
+            } = {},
+            path,
+            causePath
+          } = {}
+        } = error || {};
+
+        return getResponseWithCORS(
+          500,
+          {
+            message,
+            source: {
+              message: sourceMessage,
+              path,
+              causePath
+            }
+          }
+        );
+      }
+
       const {[methodName]: serviceMethod} = serviceInstance;
 
       if (serviceMethod instanceof Function) {
