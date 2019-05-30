@@ -24,7 +24,7 @@
   "license": "MIT",
   "dependencies": {
     "cookie": "^0.4.0",
-    "incarnate": "^5.2.1"
+    "incarnate": "^5.3.0"
   },
   "devDependencies": {
     "esdoc": "^1.1.0",
