@@ -53,7 +53,10 @@ export const DEP_NAMES = {
   PACKAGES: &apos;PACKAGES&apos;,
   HEADERS: &apos;HEADERS&apos;,
   COOKIES: &apos;COOKIES&apos;,
-  PATH: &apos;PATH&apos;
+  PATH: &apos;PATH&apos;,
+  EVENT: &apos;EVENT&apos;,
+  CONTEXT: &apos;CONTEXT&apos;,
+  IDENTITY: &apos;IDENTITY&apos;
 };
 
 // SECURITY: Don&apos;t call private methods on services.
@@ -149,6 +152,21 @@ export default (incarnateConfig = {}, allowedPaths = [], allowedOrigin = &apos;&
             },
             [DEP_NAMES.PATH]: {
               factory: () =&gt; cleanPath
+            },
+            [DEP_NAMES.EVENT]: {
+              factory: () =&gt; event
+            },
+            [DEP_NAMES.CONTEXT]: {
+              dependencies: {
+                event: DEP_NAMES.EVENT
+              },
+              factory: ({event: {requestContext = {}} = {}} = {}) =&gt; requestContext
+            },
+            [DEP_NAMES.IDENTITY]: {
+              dependencies: {
+                context: DEP_NAMES.CONTEXT
+              },
+              factory: ({context: {identity = {}} = {}} = {}) =&gt; identity
             }
           }
         },
