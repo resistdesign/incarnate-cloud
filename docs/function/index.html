@@ -55,7 +55,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-AWS">AWS</a></span></span><span class="code" data-ice="signature">(incarnateConfig: <span>Object</span>, allowedPaths: <span>Array</span>&lt;<span>string</span>&gt;, allowedOrigin: <span>Object</span>): <span>Function</span></span>
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-AWS">AWS</a></span></span><span class="code" data-ice="signature">(incarnateConfig: <span>Object</span>, allowedPaths: <span>Array</span>&lt;<span>string</span>&gt;, allowedOrigin: <span>Object</span>, dependencyResolutionTimeoutMS: <span>number</span>): <span>Function</span></span>
         </p>
       </div>
       <div>
@@ -83,15 +83,15 @@
     
     
     
-    <span class="code" data-ice="name">AWS</span><span class="code" data-ice="signature">(incarnateConfig: <span>Object</span>, allowedPaths: <span>Array</span>&lt;<span>string</span>&gt;, allowedOrigin: <span>Object</span>): <span>Function</span></span>
+    <span class="code" data-ice="name">AWS</span><span class="code" data-ice="signature">(incarnateConfig: <span>Object</span>, allowedPaths: <span>Array</span>&lt;<span>string</span>&gt;, allowedOrigin: <span>Object</span>, dependencyResolutionTimeoutMS: <span>number</span>): <span>Function</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Providers/AWS.jsx.html#lineNumber50">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Providers/AWS.jsx.html#lineNumber51">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import AWS from &apos;<span><a href="file/src/Providers/AWS.jsx.html#lineNumber50">incarnate-cloud/src/Providers/AWS.jsx</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import AWS from &apos;<span><a href="file/src/Providers/AWS.jsx.html#lineNumber51">incarnate-cloud/src/Providers/AWS.jsx</a></span>&apos;</code></pre></div>
   
   
   <div data-ice="description"><p>Create an Incarnate managed Lambda handler.</p>
@@ -126,6 +126,13 @@
       <td data-ice="type" class="code"><span>Object</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"><p>The allowed CORS origin returned to <code>OPTIONS</code> requests.</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">dependencyResolutionTimeoutMS</td>
+      <td data-ice="type" class="code"><span>number</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"><p>The maximum number of milliseconds allotted for resolving service dependencies. Default: 300000 (5 minutes)</p>
 </td>
     </tr>
 </tbody>

@@ -4,7 +4,7 @@ import MockAPIGatewayEvent from '../Mock Data/AWS/Mock API Gateway Event';
 
 module.exports = {
   AWS: {
-    'Should return a response': async () => {
+    'should return a response': async () => {
       const cloudFunction = AWS(
         {
           subMap: {
@@ -89,6 +89,54 @@ module.exports = {
 
       expect(statusCode).to.be(500);
       expect(sourceMessage).to.be(errorMessage);
+    },
+    'should handle missing strict dependencies gracefully': async () => {
+      const cloudFunction = AWS(
+        {
+          subMap: {
+            config: {
+              subMap: {
+                x: {
+                  factory: () => undefined
+                }
+              }
+            },
+            package: {
+              shared: {
+                config: 'config'
+              },
+              subMap: {
+                service: {
+                  dependencies: {
+                    x: 'config/x'
+                  },
+                  strict: true,
+                  factory: () => {
+                    return {
+                      method: a1 => a1
+                    };
+                  }
+                }
+              }
+            }
+          }
+        },
+        [
+          '/package/service/method'
+        ],
+        'http://example.com',
+        // IMPORTANT: Add a reasonable timeout.
+        1000
+      );
+      const result = await cloudFunction(MockAPIGatewayEvent);
+      const {
+        statusCode,
+        body: responseBody = '{}'
+      } = result || {};
+      const {message} = JSON.parse(responseBody) || {};
+
+      expect(statusCode).to.be(500);
+      expect(message).to.be('RESOLUTION_TIMEOUT');
     }
   }
 };
