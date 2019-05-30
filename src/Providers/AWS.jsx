@@ -1,4 +1,4 @@
-import Incarnate from 'incarnate';
+import Incarnate, {SubMapDeclaration} from 'incarnate';
 import ParseCookies from 'cookie';
 
 const PATH_DELIMITER = '/';
@@ -44,10 +44,11 @@ const getCleanHttpMethod = (method = 'POST') => `${method}`.toUpperCase();
  * @param {Object} incarnateConfig The incarnate configuration object.
  * @param {Array.<string>} allowedPaths A SECURITY measure to prevent access of values and methods outside of services.
  * @param {Object} allowedOrigin The allowed CORS origin returned to `OPTIONS` requests.
+ * @param {number} dependencyResolutionTimeoutMS The maximum number of milliseconds allotted for resolving service dependencies. Default: 300000 (5 minutes)
  *
  * @returns {Function} The Lambda handler.
  * */
-export default (incarnateConfig = {}, allowedPaths = [], allowedOrigin = '') => {
+export default (incarnateConfig = {}, allowedPaths = [], allowedOrigin = '', dependencyResolutionTimeoutMS = 300000) => {
   const corsHeaders = getCORSHeaders(allowedOrigin);
   const getResponseWithCORS = (statusCode = 200, value = undefined, headers = {}) => {
     return getResponse(
@@ -85,7 +86,7 @@ export default (incarnateConfig = {}, allowedPaths = [], allowedOrigin = '') => 
     } = incarnateConfig;
     const cleanPathParts = getCleanPathParts(path);
     const cleanPath = cleanPathParts.join(PATH_DELIMITER);
-    const inc = new Incarnate({
+    const inc = new Incarnate(new SubMapDeclaration({
       ...incarnateConfig,
       pathDelimiter: PATH_DELIMITER,
       subMap: {
@@ -119,20 +120,22 @@ export default (incarnateConfig = {}, allowedPaths = [], allowedOrigin = '') => 
           subMap
         }
       }
-    });
+    }));
     const [packageName, serviceName, methodName] = cleanPathParts;
     const methodNameIsPrivate = getMethodNameIsPrivate(methodName);
     const args = body instanceof Array ? body : [];
 
     if (!!packageName && !!serviceName && !!methodName && !methodNameIsPrivate) {
+      const servicePath = [
+        DEP_NAMES.PACKAGES,
+        packageName,
+        serviceName
+      ];
+
       let serviceInstance = {};
 
       try {
-        serviceInstance = await inc.getResolvedPathAsync([
-          DEP_NAMES.PACKAGES,
-          packageName,
-          serviceName
-        ]);
+        serviceInstance = await inc.getResolvedPathAsync(servicePath, dependencyResolutionTimeoutMS);
       } catch (error) {
         const {
           message,
@@ -176,5 +179,5 @@ export default (incarnateConfig = {}, allowedPaths = [], allowedOrigin = '') => 
     } else {
       return getResponseWithCORS(404, {message: 'Not Found'});
     }
-  };
+  }
 };

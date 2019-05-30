@@ -37,7 +37,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Providers/AWS.jsx</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Incarnate from &apos;incarnate&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Incarnate, {SubMapDeclaration} from &apos;incarnate&apos;;
 import ParseCookies from &apos;cookie&apos;;
 
 const PATH_DELIMITER = &apos;/&apos;;
@@ -83,10 +83,11 @@ const getCleanHttpMethod = (method = &apos;POST&apos;) =&gt; `${method}`.toUpper
  * @param {Object} incarnateConfig The incarnate configuration object.
  * @param {Array.&lt;string&gt;} allowedPaths A SECURITY measure to prevent access of values and methods outside of services.
  * @param {Object} allowedOrigin The allowed CORS origin returned to `OPTIONS` requests.
+ * @param {number} dependencyResolutionTimeoutMS The maximum number of milliseconds allotted for resolving service dependencies. Default: 300000 (5 minutes)
  *
  * @returns {Function} The Lambda handler.
  * */
-export default (incarnateConfig = {}, allowedPaths = [], allowedOrigin = &apos;&apos;) =&gt; {
+export default (incarnateConfig = {}, allowedPaths = [], allowedOrigin = &apos;&apos;, dependencyResolutionTimeoutMS = 300000) =&gt; {
   const corsHeaders = getCORSHeaders(allowedOrigin);
   const getResponseWithCORS = (statusCode = 200, value = undefined, headers = {}) =&gt; {
     return getResponse(
@@ -124,7 +125,7 @@ export default (incarnateConfig = {}, allowedPaths = [], allowedOrigin = &apos;&
     } = incarnateConfig;
     const cleanPathParts = getCleanPathParts(path);
     const cleanPath = cleanPathParts.join(PATH_DELIMITER);
-    const inc = new Incarnate({
+    const inc = new Incarnate(new SubMapDeclaration({
       ...incarnateConfig,
       pathDelimiter: PATH_DELIMITER,
       subMap: {
@@ -158,17 +159,47 @@ export default (incarnateConfig = {}, allowedPaths = [], allowedOrigin = &apos;&
           subMap
         }
       }
-    });
+    }));
     const [packageName, serviceName, methodName] = cleanPathParts;
     const methodNameIsPrivate = getMethodNameIsPrivate(methodName);
     const args = body instanceof Array ? body : [];
 
     if (!!packageName &amp;&amp; !!serviceName &amp;&amp; !!methodName &amp;&amp; !methodNameIsPrivate) {
-      const serviceInstance = (await inc.getResolvedPathAsync([
+      const servicePath = [
         DEP_NAMES.PACKAGES,
         packageName,
         serviceName
-      ])) || {};
+      ];
+
+      let serviceInstance = {};
+
+      try {
+        serviceInstance = await inc.getResolvedPathAsync(servicePath, dependencyResolutionTimeoutMS);
+      } catch (error) {
+        const {
+          message,
+          source: {
+            error: {
+              message: sourceMessage
+            } = {},
+            path,
+            causePath
+          } = {}
+        } = error || {};
+
+        return getResponseWithCORS(
+          500,
+          {
+            message,
+            source: {
+              message: sourceMessage,
+              path,
+              causePath
+            }
+          }
+        );
+      }
+
       const {[methodName]: serviceMethod} = serviceInstance;
 
       if (serviceMethod instanceof Function) {
@@ -187,7 +218,7 @@ export default (incarnateConfig = {}, allowedPaths = [], allowedOrigin = &apos;&
     } else {
       return getResponseWithCORS(404, {message: &apos;Not Found&apos;});
     }
-  };
+  }
 };
 </code></pre>
 
