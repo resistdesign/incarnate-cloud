@@ -1,6 +1,7 @@
 import expect from 'expect.js';
 import {AWS} from './index.jsx';
 import MockAPIGatewayEvent from '../Mock Data/AWS/Mock API Gateway Event';
+import {DEP_NAMES} from './Providers/AWS';
 
 module.exports = {
   AWS: {
@@ -137,6 +138,59 @@ module.exports = {
 
       expect(statusCode).to.be(500);
       expect(message).to.be('RESOLUTION_TIMEOUT');
+    },
+    'should supply request specific built-in dependencies': async () => {
+      const getDepPath = p => `${DEP_NAMES.INPUT}/${p}`;
+      const cloudFunction = AWS(
+        {
+          subMap: {
+            package: {
+              shared: {
+                [DEP_NAMES.INPUT]: DEP_NAMES.INPUT
+              },
+              subMap: {
+                service: {
+                  dependencies: {
+                    event: getDepPath(DEP_NAMES.EVENT),
+                    context: getDepPath(DEP_NAMES.CONTEXT),
+                    identity: getDepPath(DEP_NAMES.IDENTITY)
+                  },
+                  factory: d => ({
+                    method: () => d
+                  })
+                }
+              }
+            }
+          }
+        },
+        [
+          '/package/service/method'
+        ],
+        'http://example.com',
+        // IMPORTANT: Add a reasonable timeout.
+        1000
+      );
+      const result = await cloudFunction(MockAPIGatewayEvent);
+      const {
+        statusCode,
+        body: responseBody = '{}'
+      } = result || {};
+      const {
+        event,
+        context,
+        identity
+      } = JSON.parse(responseBody) || {};
+
+      expect(statusCode).to.be(200);
+
+      expect(event).to.be.an(Object);
+      expect(event.test).to.be('TEST_EVENT');
+
+      expect(context).to.be.an(Object);
+      expect(context.test).to.be('TEST_CONTEXT');
+
+      expect(identity).to.be.an(Object);
+      expect(identity.test).to.be('TEST_IDENTITY');
     }
   }
 };
