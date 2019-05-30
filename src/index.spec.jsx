@@ -58,7 +58,7 @@ module.exports = {
               subMap: {
                 service: {
                   dependencies: {
-                    x: 'config.x'
+                    x: 'config/x'
                   },
                   strict: true,
                   factory: () => {

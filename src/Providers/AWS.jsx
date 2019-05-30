@@ -1,4 +1,4 @@
-import Incarnate from 'incarnate';
+import Incarnate, {SubMapDeclaration} from 'incarnate';
 import ParseCookies from 'cookie';
 
 const PATH_DELIMITER = '/';
@@ -85,7 +85,7 @@ export default (incarnateConfig = {}, allowedPaths = [], allowedOrigin = '') => 
     } = incarnateConfig;
     const cleanPathParts = getCleanPathParts(path);
     const cleanPath = cleanPathParts.join(PATH_DELIMITER);
-    const inc = new Incarnate({
+    const inc = new Incarnate(new SubMapDeclaration({
       ...incarnateConfig,
       pathDelimiter: PATH_DELIMITER,
       subMap: {
@@ -119,7 +119,7 @@ export default (incarnateConfig = {}, allowedPaths = [], allowedOrigin = '') => 
           subMap
         }
       }
-    });
+    }));
     const [packageName, serviceName, methodName] = cleanPathParts;
     const methodNameIsPrivate = getMethodNameIsPrivate(methodName);
     const args = body instanceof Array ? body : [];
