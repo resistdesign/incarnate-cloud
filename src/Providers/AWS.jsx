@@ -184,12 +184,15 @@ export default (incarnateConfig = {}, allowedPaths = [], allowedOrigin = '', dep
       if (serviceMethod instanceof Function) {
         try {
           const returnValue = await serviceMethod(...args);
+          const returnValueAsObject = returnValue instanceof Object ? returnValue : {};
+          const {statusCode = 200} = returnValueAsObject;
 
-          return getResponseWithCORS(200, returnValue);
+          return getResponseWithCORS(statusCode, returnValue);
         } catch (error) {
-          const {message = ''} = error || {};
+          const errorAsObject = error instanceof Object ? error : {};
+          const {statusCode = 500} = errorAsObject;
 
-          return getResponseWithCORS(500, {message});
+          return getResponseWithCORS(statusCode, error);
         }
       } else {
         return getResponseWithCORS(404, {message: 'Not Found'});
