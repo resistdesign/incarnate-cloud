@@ -30,8 +30,13 @@
   <ul>
     
   <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AWS">AWS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AWSConfigLoader">AWSConfigLoader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-ServiceResponse">ServiceResponse</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">Providers</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-AWS">AWS</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DEP_NAMES">DEP_NAMES</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-aws">Providers/AWS</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Providers/AWS/ConfigLoader.jsx~ConfigLoader.html">ConfigLoader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ISystemsManager">ISystemsManager</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">Utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/ServiceResponse.jsx~ServiceResponse.html">ServiceResponse</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -83,14 +88,20 @@ const getCleanHttpMethod = (method = &apos;POST&apos;) =&gt; `${method}`.toUpper
 
 /**
  * Create an Incarnate managed Lambda handler.
- * @param {Object} incarnateConfig The incarnate configuration object.
- * @param {Array.&lt;string&gt;} allowedPaths A SECURITY measure to prevent access of values and methods outside of services.
- * @param {Object} allowedOrigin The allowed CORS origin returned to `OPTIONS` requests.
- * @param {number} dependencyResolutionTimeoutMS The maximum number of milliseconds allotted for resolving service dependencies. Default: 300000 (5 minutes)
+ * @param {Object} config
+ * @param {Object} config.incarnateConfig The incarnate configuration object.
+ * @param {Array.&lt;string&gt;} config.allowedPaths A SECURITY measure to prevent access of values and methods outside of services.
+ * @param {Object} config.allowedOrigin The allowed CORS origin returned to `OPTIONS` requests.
+ * @param {number} config.dependencyResolutionTimeoutMS The maximum number of milliseconds allotted for resolving service dependencies. Default: 300000 (5 minutes)
  *
  * @returns {Function} The Lambda handler.
  * */
-export default (incarnateConfig = {}, allowedPaths = [], allowedOrigin = &apos;&apos;, dependencyResolutionTimeoutMS = 300000) =&gt; {
+export default ({
+                  incarnateConfig = {},
+                  allowedPaths = [],
+                  allowedOrigin = &apos;&apos;,
+                  dependencyResolutionTimeoutMS = 300000
+                } = {}) =&gt; {
   const corsHeaders = getCORSHeaders(allowedOrigin);
   const getResponseWithCORS = (statusCode = 200, value = undefined, headers = {}) =&gt; {
     return getResponse(
@@ -223,12 +234,15 @@ export default (incarnateConfig = {}, allowedPaths = [], allowedOrigin = &apos;&
       if (serviceMethod instanceof Function) {
         try {
           const returnValue = await serviceMethod(...args);
+          const returnValueAsObject = returnValue instanceof Object ? returnValue : {};
+          const {statusCode = 200} = returnValueAsObject;
 
-          return getResponseWithCORS(200, returnValue);
+          return getResponseWithCORS(statusCode, returnValue);
         } catch (error) {
-          const {message = &apos;&apos;} = error || {};
+          const errorAsObject = error instanceof Object ? error : {};
+          const {statusCode = 500} = errorAsObject;
 
-          return getResponseWithCORS(500, {message});
+          return getResponseWithCORS(statusCode, error);
         }
       } else {
         return getResponseWithCORS(404, {message: &apos;Not Found&apos;});
