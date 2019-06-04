@@ -1,8 +1,17 @@
 {
-  "coverage": "20%",
-  "expectCount": 10,
-  "actualCount": 2,
+  "coverage": "36%",
+  "expectCount": 25,
+  "actualCount": 9,
   "files": {
+    "src/Providers/AWS/ConfigLoader.jsx": {
+      "expectCount": 8,
+      "actualCount": 5,
+      "undocumentLines": [
+        10,
+        27,
+        29
+      ]
+    },
     "src/Providers/AWS.jsx": {
       "expectCount": 9,
       "actualCount": 2,
@@ -16,11 +25,22 @@
         43
       ]
     },
+    "src/Utils/ServiceResponse.jsx": {
+      "expectCount": 5,
+      "actualCount": 2,
+      "undocumentLines": [
+        1,
+        12,
+        17
+      ]
+    },
     "src/index.jsx": {
-      "expectCount": 1,
+      "expectCount": 3,
       "actualCount": 0,
       "undocumentLines": [
-        3
+        5,
+        7,
+        8
       ]
     }
   }

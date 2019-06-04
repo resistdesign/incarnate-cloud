@@ -2,8 +2,253 @@
   {
     "__docId__": 0,
     "kind": "file",
+    "name": "src/Providers/AWS/ConfigLoader.jsx",
+    "content": "/**\n * @typedef {Object} ISystemsManager\n * @property {Function} getParameter\n * */\n\n/**\n * Load named configurations from parameter storage.\n * */\nexport default class ConfigLoader {\n  static getFullPath = (basePath = '', name = '') => {\n    return `${basePath}/${name}`\n      .replace(/\\/\\//g, '/');\n  };\n\n  /**\n   * The base path for all configurations to be loaded.\n   * @type {string}\n   * */\n  basePath;\n\n  /**\n   * The Systems Manager instance.\n   * @type {ISystemsManager}\n   * */\n  ssm;\n\n  _cache = {};\n\n  constructor(config = {}) {\n    Object.assign(this, config);\n  }\n\n  /**\n   * Load a configuration by name.\n   * @param {string} name The name of the configuration.\n   * @param {boolean} useCache Use a cached value if available, and cache the value if not.\n   * @returns {string} The configuration data.\n   * */\n  loadConfig = async (name = '', useCache = true) => {\n    let configData = undefined;\n\n    if (useCache && this._cache.hasOwnProperty(name)) {\n      configData = this._cache[name];\n    } else {\n      const {\n        Parameter: {\n          Value\n        }\n      } = await this.ssm.getParameter({\n        Name: ConfigLoader.getFullPath(this.basePath, name),\n        WithDecryption: true\n      }).promise();\n      configData = Value;\n\n      if (useCache) {\n        this._cache[name] = configData;\n      }\n    }\n\n    return configData;\n  };\n\n  /**\n   * Load a configuration by name.\n   * @param {string} name The name of the configuration.\n   * @param {boolean} useCache Use a cached value if available, and cache the value if not.\n   * @returns {string} The configuration data.\n   * */\n  loadJSONConfig = async (name = '', useCache = true) => {\n    const configData = await this.loadConfig(name, useCache);\n\n    return typeof configData === 'undefined' ?\n      configData :\n      JSON.parse(configData);\n  };\n}\n",
+    "static": true,
+    "longname": "/Users/ryangraff/projects/incarnate-cloud/src/Providers/AWS/ConfigLoader.jsx",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 1,
+    "kind": "typedef",
+    "name": "ISystemsManager",
+    "memberof": "src/Providers/AWS/ConfigLoader.jsx",
+    "static": true,
+    "longname": "src/Providers/AWS/ConfigLoader.jsx~ISystemsManager",
+    "access": "public",
+    "description": "",
+    "properties": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "getParameter",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "Object"
+      ],
+      "optional": false,
+      "name": "ISystemsManager"
+    }
+  },
+  {
+    "__docId__": 2,
+    "kind": "class",
+    "name": "ConfigLoader",
+    "memberof": "src/Providers/AWS/ConfigLoader.jsx",
+    "static": true,
+    "longname": "src/Providers/AWS/ConfigLoader.jsx~ConfigLoader",
+    "access": "public",
+    "export": true,
+    "importPath": "incarnate-cloud/src/Providers/AWS/ConfigLoader.jsx",
+    "importStyle": "ConfigLoader",
+    "description": "Load named configurations from parameter storage.",
+    "lineNumber": 9,
+    "interface": false
+  },
+  {
+    "__docId__": 3,
+    "kind": "member",
+    "name": "getFullPath",
+    "memberof": "src/Providers/AWS/ConfigLoader.jsx~ConfigLoader",
+    "static": true,
+    "longname": "src/Providers/AWS/ConfigLoader.jsx~ConfigLoader.getFullPath",
+    "access": "public",
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 4,
+    "kind": "member",
+    "name": "basePath",
+    "memberof": "src/Providers/AWS/ConfigLoader.jsx~ConfigLoader",
+    "static": false,
+    "longname": "src/Providers/AWS/ConfigLoader.jsx~ConfigLoader#basePath",
+    "access": "public",
+    "description": "The base path for all configurations to be loaded.",
+    "lineNumber": 19,
+    "type": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 5,
+    "kind": "member",
+    "name": "ssm",
+    "memberof": "src/Providers/AWS/ConfigLoader.jsx~ConfigLoader",
+    "static": false,
+    "longname": "src/Providers/AWS/ConfigLoader.jsx~ConfigLoader#ssm",
+    "access": "public",
+    "description": "The Systems Manager instance.",
+    "lineNumber": 25,
+    "type": {
+      "nullable": null,
+      "types": [
+        "ISystemsManager"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 6,
+    "kind": "member",
+    "name": "_cache",
+    "memberof": "src/Providers/AWS/ConfigLoader.jsx~ConfigLoader",
+    "static": false,
+    "longname": "src/Providers/AWS/ConfigLoader.jsx~ConfigLoader#_cache",
+    "access": "private",
+    "description": null,
+    "lineNumber": 27,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 7,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "src/Providers/AWS/ConfigLoader.jsx~ConfigLoader",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Providers/AWS/ConfigLoader.jsx~ConfigLoader#constructor",
+    "access": "public",
+    "description": null,
+    "lineNumber": 29,
+    "undocument": true
+  },
+  {
+    "__docId__": 8,
+    "kind": "member",
+    "name": "loadConfig",
+    "memberof": "src/Providers/AWS/ConfigLoader.jsx~ConfigLoader",
+    "static": false,
+    "longname": "src/Providers/AWS/ConfigLoader.jsx~ConfigLoader#loadConfig",
+    "access": "public",
+    "description": "Load a configuration by name.",
+    "lineNumber": 39,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{string} The configuration data."
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "name",
+        "description": "The name of the configuration."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "boolean"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "useCache",
+        "description": "Use a cached value if available, and cache the value if not."
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": "The configuration data."
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 9,
+    "kind": "member",
+    "name": "loadJSONConfig",
+    "memberof": "src/Providers/AWS/ConfigLoader.jsx~ConfigLoader",
+    "static": false,
+    "longname": "src/Providers/AWS/ConfigLoader.jsx~ConfigLoader#loadJSONConfig",
+    "access": "public",
+    "description": "Load a configuration by name.",
+    "lineNumber": 69,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{string} The configuration data."
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "name",
+        "description": "The name of the configuration."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "boolean"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "useCache",
+        "description": "Use a cached value if available, and cache the value if not."
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": "The configuration data."
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 10,
+    "kind": "file",
     "name": "src/Providers/AWS.jsx",
-    "content": "import Incarnate, {SubMapDeclaration} from 'incarnate';\nimport ParseCookies from 'cookie';\n\nconst PATH_DELIMITER = '/';\nconst METHODS = {\n  OPTIONS: 'OPTIONS'\n};\n\n/**\n * Built-in dependency names.\n * */\nexport const DEP_NAMES = {\n  INPUT: 'INPUT',\n  PACKAGES: 'PACKAGES',\n  HEADERS: 'HEADERS',\n  COOKIES: 'COOKIES',\n  PATH: 'PATH',\n  EVENT: 'EVENT',\n  CONTEXT: 'CONTEXT',\n  IDENTITY: 'IDENTITY'\n};\n\n// SECURITY: Don't call private methods on services.\nconst getMethodNameIsPrivate = (methodName = '') => methodName.charAt(0) === '_';\n\nconst getCleanPathParts = (path = '') => path\n  .split(PATH_DELIMITER)\n  .filter(p => !!p);\n\nconst getResponse = (statusCode = 200, value = undefined, headers = {}) => ({\n  statusCode,\n  headers: typeof value === 'undefined' ? {...headers} : {'Content-Type': 'application/json', ...headers},\n  body: typeof value === 'undefined' ? '' : JSON.stringify(value, null, '  ')\n});\n\nconst getCORSHeaders = (clientOrigin = '') => ({\n  'Access-Control-Allow-Origin': clientOrigin,\n  'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',\n  'Access-Control-Allow-Methods': 'OPTIONS, HEAD, GET, POST, PUT, PATCH, DELETE',\n  'Access-Control-Allow-Credentials': 'true'\n});\n\nconst getCleanHttpMethod = (method = 'POST') => `${method}`.toUpperCase();\n\n/**\n * Create an Incarnate managed Lambda handler.\n * @param {Object} incarnateConfig The incarnate configuration object.\n * @param {Array.<string>} allowedPaths A SECURITY measure to prevent access of values and methods outside of services.\n * @param {Object} allowedOrigin The allowed CORS origin returned to `OPTIONS` requests.\n * @param {number} dependencyResolutionTimeoutMS The maximum number of milliseconds allotted for resolving service dependencies. Default: 300000 (5 minutes)\n *\n * @returns {Function} The Lambda handler.\n * */\nexport default (incarnateConfig = {}, allowedPaths = [], allowedOrigin = '', dependencyResolutionTimeoutMS = 300000) => {\n  const corsHeaders = getCORSHeaders(allowedOrigin);\n  const getResponseWithCORS = (statusCode = 200, value = undefined, headers = {}) => {\n    return getResponse(\n      statusCode,\n      value,\n      {\n        ...corsHeaders,\n        ...headers\n      }\n    );\n  };\n\n  return async (event) => {\n    const {\n      httpMethod = 'POST',\n      headers,\n      multiValueHeaders,\n      path = '',\n      body: bodyString = '[]'\n    } = event;\n    const cleanHttpMethod = getCleanHttpMethod(httpMethod);\n\n    if (cleanHttpMethod === METHODS.OPTIONS) {\n      return getResponseWithCORS(200);\n    }\n\n    // SECURITY: IMPORTANT: Only expose allowed paths. (`/package/service/method`)\n    if (allowedPaths.indexOf(path) === -1) {\n      return getResponseWithCORS(404, {message: 'Not Found'});\n    }\n\n    const body = JSON.parse(bodyString);\n    const {\n      subMap = {}\n    } = incarnateConfig;\n    const cleanPathParts = getCleanPathParts(path);\n    const cleanPath = cleanPathParts.join(PATH_DELIMITER);\n    const inc = new Incarnate(new SubMapDeclaration({\n      ...incarnateConfig,\n      pathDelimiter: PATH_DELIMITER,\n      subMap: {\n        [DEP_NAMES.INPUT]: {\n          subMap: {\n            [DEP_NAMES.HEADERS]: {\n              factory: () => ({\n                ...headers,\n                ...multiValueHeaders\n              })\n            },\n            [DEP_NAMES.COOKIES]: {\n              dependencies: {\n                suppliedHeaders: DEP_NAMES.HEADERS\n              },\n              factory: ({suppliedHeaders = {}} = {}) => {\n                const {Cookie: cookieString = ''} = suppliedHeaders;\n\n                return ParseCookies(cookieString);\n              }\n            },\n            [DEP_NAMES.PATH]: {\n              factory: () => cleanPath\n            },\n            [DEP_NAMES.EVENT]: {\n              factory: () => event\n            },\n            [DEP_NAMES.CONTEXT]: {\n              dependencies: {\n                event: DEP_NAMES.EVENT\n              },\n              factory: ({event: {requestContext = {}} = {}} = {}) => requestContext\n            },\n            [DEP_NAMES.IDENTITY]: {\n              dependencies: {\n                context: DEP_NAMES.CONTEXT\n              },\n              factory: ({context: {identity = {}} = {}} = {}) => identity\n            }\n          }\n        },\n        [DEP_NAMES.PACKAGES]: {\n          shared: {\n            [DEP_NAMES.INPUT]: DEP_NAMES.INPUT\n          },\n          subMap\n        }\n      }\n    }));\n    const [packageName, serviceName, methodName] = cleanPathParts;\n    const methodNameIsPrivate = getMethodNameIsPrivate(methodName);\n    const args = body instanceof Array ? body : [];\n\n    if (!!packageName && !!serviceName && !!methodName && !methodNameIsPrivate) {\n      const servicePath = [\n        DEP_NAMES.PACKAGES,\n        packageName,\n        serviceName\n      ];\n\n      let serviceInstance = {};\n\n      try {\n        serviceInstance = await inc.getResolvedPathAsync(servicePath, dependencyResolutionTimeoutMS);\n      } catch (error) {\n        const {\n          message,\n          source: {\n            error: {\n              message: sourceMessage\n            } = {},\n            path,\n            causePath\n          } = {}\n        } = error || {};\n\n        return getResponseWithCORS(\n          500,\n          {\n            message,\n            source: {\n              message: sourceMessage,\n              path,\n              causePath\n            }\n          }\n        );\n      }\n\n      const {[methodName]: serviceMethod} = serviceInstance;\n\n      if (serviceMethod instanceof Function) {\n        try {\n          const returnValue = await serviceMethod(...args);\n\n          return getResponseWithCORS(200, returnValue);\n        } catch (error) {\n          const {message = ''} = error || {};\n\n          return getResponseWithCORS(500, {message});\n        }\n      } else {\n        return getResponseWithCORS(404, {message: 'Not Found'});\n      }\n    } else {\n      return getResponseWithCORS(404, {message: 'Not Found'});\n    }\n  }\n};\n",
+    "content": "import Incarnate, {SubMapDeclaration} from 'incarnate';\nimport ParseCookies from 'cookie';\n\nconst PATH_DELIMITER = '/';\nconst METHODS = {\n  OPTIONS: 'OPTIONS'\n};\n\n/**\n * Built-in dependency names.\n * */\nexport const DEP_NAMES = {\n  INPUT: 'INPUT',\n  PACKAGES: 'PACKAGES',\n  HEADERS: 'HEADERS',\n  COOKIES: 'COOKIES',\n  PATH: 'PATH',\n  EVENT: 'EVENT',\n  CONTEXT: 'CONTEXT',\n  IDENTITY: 'IDENTITY'\n};\n\n// SECURITY: Don't call private methods on services.\nconst getMethodNameIsPrivate = (methodName = '') => methodName.charAt(0) === '_';\n\nconst getCleanPathParts = (path = '') => path\n  .split(PATH_DELIMITER)\n  .filter(p => !!p);\n\nconst getResponse = (statusCode = 200, value = undefined, headers = {}) => ({\n  statusCode,\n  headers: typeof value === 'undefined' ? {...headers} : {'Content-Type': 'application/json', ...headers},\n  body: typeof value === 'undefined' ? '' : JSON.stringify(value, null, '  ')\n});\n\nconst getCORSHeaders = (clientOrigin = '') => ({\n  'Access-Control-Allow-Origin': clientOrigin,\n  'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',\n  'Access-Control-Allow-Methods': 'OPTIONS, HEAD, GET, POST, PUT, PATCH, DELETE',\n  'Access-Control-Allow-Credentials': 'true'\n});\n\nconst getCleanHttpMethod = (method = 'POST') => `${method}`.toUpperCase();\n\n/**\n * Create an Incarnate managed Lambda handler.\n * @param {Object} config\n * @param {Object} config.incarnateConfig The incarnate configuration object.\n * @param {Array.<string>} config.allowedPaths A SECURITY measure to prevent access of values and methods outside of services.\n * @param {Object} config.allowedOrigin The allowed CORS origin returned to `OPTIONS` requests.\n * @param {number} config.dependencyResolutionTimeoutMS The maximum number of milliseconds allotted for resolving service dependencies. Default: 300000 (5 minutes)\n *\n * @returns {Function} The Lambda handler.\n * */\nexport default ({\n                  incarnateConfig = {},\n                  allowedPaths = [],\n                  allowedOrigin = '',\n                  dependencyResolutionTimeoutMS = 300000\n                } = {}) => {\n  const corsHeaders = getCORSHeaders(allowedOrigin);\n  const getResponseWithCORS = (statusCode = 200, value = undefined, headers = {}) => {\n    return getResponse(\n      statusCode,\n      value,\n      {\n        ...corsHeaders,\n        ...headers\n      }\n    );\n  };\n\n  return async (event) => {\n    const {\n      httpMethod = 'POST',\n      headers,\n      multiValueHeaders,\n      path = '',\n      body: bodyString = '[]'\n    } = event;\n    const cleanHttpMethod = getCleanHttpMethod(httpMethod);\n\n    if (cleanHttpMethod === METHODS.OPTIONS) {\n      return getResponseWithCORS(200);\n    }\n\n    // SECURITY: IMPORTANT: Only expose allowed paths. (`/package/service/method`)\n    if (allowedPaths.indexOf(path) === -1) {\n      return getResponseWithCORS(404, {message: 'Not Found'});\n    }\n\n    const body = JSON.parse(bodyString);\n    const {\n      subMap = {}\n    } = incarnateConfig;\n    const cleanPathParts = getCleanPathParts(path);\n    const cleanPath = cleanPathParts.join(PATH_DELIMITER);\n    const inc = new Incarnate(new SubMapDeclaration({\n      ...incarnateConfig,\n      pathDelimiter: PATH_DELIMITER,\n      subMap: {\n        [DEP_NAMES.INPUT]: {\n          subMap: {\n            [DEP_NAMES.HEADERS]: {\n              factory: () => ({\n                ...headers,\n                ...multiValueHeaders\n              })\n            },\n            [DEP_NAMES.COOKIES]: {\n              dependencies: {\n                suppliedHeaders: DEP_NAMES.HEADERS\n              },\n              factory: ({suppliedHeaders = {}} = {}) => {\n                const {Cookie: cookieString = ''} = suppliedHeaders;\n\n                return ParseCookies(cookieString);\n              }\n            },\n            [DEP_NAMES.PATH]: {\n              factory: () => cleanPath\n            },\n            [DEP_NAMES.EVENT]: {\n              factory: () => event\n            },\n            [DEP_NAMES.CONTEXT]: {\n              dependencies: {\n                event: DEP_NAMES.EVENT\n              },\n              factory: ({event: {requestContext = {}} = {}} = {}) => requestContext\n            },\n            [DEP_NAMES.IDENTITY]: {\n              dependencies: {\n                context: DEP_NAMES.CONTEXT\n              },\n              factory: ({context: {identity = {}} = {}} = {}) => identity\n            }\n          }\n        },\n        [DEP_NAMES.PACKAGES]: {\n          shared: {\n            [DEP_NAMES.INPUT]: DEP_NAMES.INPUT\n          },\n          subMap\n        }\n      }\n    }));\n    const [packageName, serviceName, methodName] = cleanPathParts;\n    const methodNameIsPrivate = getMethodNameIsPrivate(methodName);\n    const args = body instanceof Array ? body : [];\n\n    if (!!packageName && !!serviceName && !!methodName && !methodNameIsPrivate) {\n      const servicePath = [\n        DEP_NAMES.PACKAGES,\n        packageName,\n        serviceName\n      ];\n\n      let serviceInstance = {};\n\n      try {\n        serviceInstance = await inc.getResolvedPathAsync(servicePath, dependencyResolutionTimeoutMS);\n      } catch (error) {\n        const {\n          message,\n          source: {\n            error: {\n              message: sourceMessage\n            } = {},\n            path,\n            causePath\n          } = {}\n        } = error || {};\n\n        return getResponseWithCORS(\n          500,\n          {\n            message,\n            source: {\n              message: sourceMessage,\n              path,\n              causePath\n            }\n          }\n        );\n      }\n\n      const {[methodName]: serviceMethod} = serviceInstance;\n\n      if (serviceMethod instanceof Function) {\n        try {\n          const returnValue = await serviceMethod(...args);\n          const returnValueAsObject = returnValue instanceof Object ? returnValue : {};\n          const {statusCode = 200} = returnValueAsObject;\n\n          return getResponseWithCORS(statusCode, returnValue);\n        } catch (error) {\n          const errorAsObject = error instanceof Object ? error : {};\n          const {statusCode = 500} = errorAsObject;\n\n          return getResponseWithCORS(statusCode, error);\n        }\n      } else {\n        return getResponseWithCORS(404, {message: 'Not Found'});\n      }\n    } else {\n      return getResponseWithCORS(404, {message: 'Not Found'});\n    }\n  }\n};\n",
     "static": true,
     "longname": "/Users/ryangraff/projects/incarnate-cloud/src/Providers/AWS.jsx",
     "access": "public",
@@ -11,7 +256,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 1,
+    "__docId__": 11,
     "kind": "variable",
     "name": "PATH_DELIMITER",
     "memberof": "src/Providers/AWS.jsx",
@@ -32,7 +277,7 @@
     "ignore": true
   },
   {
-    "__docId__": 2,
+    "__docId__": 12,
     "kind": "variable",
     "name": "METHODS",
     "memberof": "src/Providers/AWS.jsx",
@@ -53,7 +298,7 @@
     "ignore": true
   },
   {
-    "__docId__": 3,
+    "__docId__": 13,
     "kind": "variable",
     "name": "DEP_NAMES",
     "memberof": "src/Providers/AWS.jsx",
@@ -72,7 +317,7 @@
     }
   },
   {
-    "__docId__": 4,
+    "__docId__": 14,
     "kind": "function",
     "name": "getMethodNameIsPrivate",
     "memberof": "src/Providers/AWS.jsx",
@@ -102,7 +347,7 @@
     "ignore": true
   },
   {
-    "__docId__": 5,
+    "__docId__": 15,
     "kind": "function",
     "name": "getCleanPathParts",
     "memberof": "src/Providers/AWS.jsx",
@@ -132,7 +377,7 @@
     "ignore": true
   },
   {
-    "__docId__": 6,
+    "__docId__": 16,
     "kind": "function",
     "name": "getResponse",
     "memberof": "src/Providers/AWS.jsx",
@@ -180,7 +425,7 @@
     "ignore": true
   },
   {
-    "__docId__": 7,
+    "__docId__": 17,
     "kind": "function",
     "name": "getCORSHeaders",
     "memberof": "src/Providers/AWS.jsx",
@@ -210,7 +455,7 @@
     "ignore": true
   },
   {
-    "__docId__": 8,
+    "__docId__": 18,
     "kind": "function",
     "name": "getCleanHttpMethod",
     "memberof": "src/Providers/AWS.jsx",
@@ -240,7 +485,7 @@
     "ignore": true
   },
   {
-    "__docId__": 9,
+    "__docId__": 19,
     "kind": "function",
     "name": "AWS",
     "memberof": "src/Providers/AWS.jsx",
@@ -253,7 +498,7 @@
     "importPath": "incarnate-cloud/src/Providers/AWS.jsx",
     "importStyle": "AWS",
     "description": "Create an Incarnate managed Lambda handler.",
-    "lineNumber": 54,
+    "lineNumber": 55,
     "unknown": [
       {
         "tagName": "@returns",
@@ -268,7 +513,17 @@
         ],
         "spread": false,
         "optional": false,
-        "name": "incarnateConfig",
+        "name": "config",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "config.incarnateConfig",
         "description": "The incarnate configuration object."
       },
       {
@@ -278,7 +533,7 @@
         ],
         "spread": false,
         "optional": false,
-        "name": "allowedPaths",
+        "name": "config.allowedPaths",
         "description": "A SECURITY measure to prevent access of values and methods outside of services."
       },
       {
@@ -288,7 +543,7 @@
         ],
         "spread": false,
         "optional": false,
-        "name": "allowedOrigin",
+        "name": "config.allowedOrigin",
         "description": "The allowed CORS origin returned to `OPTIONS` requests."
       },
       {
@@ -298,7 +553,7 @@
         ],
         "spread": false,
         "optional": false,
-        "name": "dependencyResolutionTimeoutMS",
+        "name": "config.dependencyResolutionTimeoutMS",
         "description": "The maximum number of milliseconds allotted for resolving service dependencies. Default: 300000 (5 minutes)"
       }
     ],
@@ -312,10 +567,106 @@
     }
   },
   {
-    "__docId__": 10,
+    "__docId__": 20,
+    "kind": "file",
+    "name": "src/Utils/ServiceResponse.jsx",
+    "content": "export default class ServiceResponse {\n  /**\n   * @type {number}\n   * */\n  statusCode = 400;\n\n  /**\n   * @type {*}\n   * */\n  data;\n\n  constructor(statusCode = 400, data) {\n    this.statusCode = statusCode;\n    this.data = data;\n  }\n\n  toJSON = () => this.data;\n}\n",
+    "static": true,
+    "longname": "/Users/ryangraff/projects/incarnate-cloud/src/Utils/ServiceResponse.jsx",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 21,
+    "kind": "class",
+    "name": "ServiceResponse",
+    "memberof": "src/Utils/ServiceResponse.jsx",
+    "static": true,
+    "longname": "src/Utils/ServiceResponse.jsx~ServiceResponse",
+    "access": "public",
+    "export": true,
+    "importPath": "incarnate-cloud/src/Utils/ServiceResponse.jsx",
+    "importStyle": "ServiceResponse",
+    "description": null,
+    "lineNumber": 1,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "__docId__": 22,
+    "kind": "member",
+    "name": "statusCode",
+    "memberof": "src/Utils/ServiceResponse.jsx~ServiceResponse",
+    "static": false,
+    "longname": "src/Utils/ServiceResponse.jsx~ServiceResponse#statusCode",
+    "access": "public",
+    "description": "",
+    "lineNumber": 5,
+    "type": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 23,
+    "kind": "member",
+    "name": "data",
+    "memberof": "src/Utils/ServiceResponse.jsx~ServiceResponse",
+    "static": false,
+    "longname": "src/Utils/ServiceResponse.jsx~ServiceResponse#data",
+    "access": "public",
+    "description": "",
+    "lineNumber": 10,
+    "type": {
+      "nullable": null,
+      "types": [
+        "*"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 24,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "src/Utils/ServiceResponse.jsx~ServiceResponse",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Utils/ServiceResponse.jsx~ServiceResponse#constructor",
+    "access": "public",
+    "description": null,
+    "lineNumber": 12,
+    "undocument": true
+  },
+  {
+    "__docId__": 27,
+    "kind": "member",
+    "name": "toJSON",
+    "memberof": "src/Utils/ServiceResponse.jsx~ServiceResponse",
+    "static": false,
+    "longname": "src/Utils/ServiceResponse.jsx~ServiceResponse#toJSON",
+    "access": "public",
+    "description": null,
+    "lineNumber": 17,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 28,
     "kind": "file",
     "name": "src/index.jsx",
-    "content": "import AWSInternal from './Providers/AWS';\n\nexport const AWS = AWSInternal;\n",
+    "content": "import AWSConfigLoaderInternal from './Providers/AWS/ConfigLoader';\nimport AWSInternal from './Providers/AWS';\nimport ServiceResponseInternal from './Utils/ServiceResponse';\n\nexport const ServiceResponse = ServiceResponseInternal;\n\nexport const AWSConfigLoader = AWSConfigLoaderInternal;\nexport const AWS = AWSInternal;\n",
     "static": true,
     "longname": "/Users/ryangraff/projects/incarnate-cloud/src/index.jsx",
     "access": "public",
@@ -323,7 +674,47 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 11,
+    "__docId__": 29,
+    "kind": "variable",
+    "name": "ServiceResponse",
+    "memberof": "src/index.jsx",
+    "static": true,
+    "longname": "src/index.jsx~ServiceResponse",
+    "access": "public",
+    "export": true,
+    "importPath": "incarnate-cloud",
+    "importStyle": "{ServiceResponse}",
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 30,
+    "kind": "variable",
+    "name": "AWSConfigLoader",
+    "memberof": "src/index.jsx",
+    "static": true,
+    "longname": "src/index.jsx~AWSConfigLoader",
+    "access": "public",
+    "export": true,
+    "importPath": "incarnate-cloud",
+    "importStyle": "{AWSConfigLoader}",
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 31,
     "kind": "variable",
     "name": "AWS",
     "memberof": "src/index.jsx",
@@ -334,7 +725,7 @@
     "importPath": "incarnate-cloud",
     "importStyle": "{AWS}",
     "description": null,
-    "lineNumber": 3,
+    "lineNumber": 8,
     "undocument": true,
     "type": {
       "types": [

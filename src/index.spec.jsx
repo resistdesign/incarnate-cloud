@@ -6,8 +6,8 @@ import {DEP_NAMES} from './Providers/AWS';
 module.exports = {
   AWS: {
     'should return a response': async () => {
-      const cloudFunction = AWS(
-        {
+      const cloudFunction = AWS({
+        incarnateConfig: {
           subMap: {
             package: {
               subMap: {
@@ -22,11 +22,11 @@ module.exports = {
             }
           }
         },
-        [
+        allowedPaths: [
           '/package/service/method'
         ],
-        'http://example.com'
-      );
+        allowedOrigin: 'http://example.com'
+      });
       const {
         body: responseBody
       } = await cloudFunction(MockAPIGatewayEvent);
@@ -40,8 +40,8 @@ module.exports = {
     },
     'should return asynchronous dependency errors': async () => {
       const errorMessage = 'X_FAILED';
-      const cloudFunction = AWS(
-        {
+      const cloudFunction = AWS({
+        incarnateConfig: {
           subMap: {
             config: {
               subMap: {
@@ -72,11 +72,11 @@ module.exports = {
             }
           }
         },
-        [
+        allowedPaths: [
           '/package/service/method'
         ],
-        'http://example.com'
-      );
+        allowedOrigin: 'http://example.com'
+      });
       const result = await cloudFunction(MockAPIGatewayEvent);
       const {
         statusCode,
@@ -92,8 +92,8 @@ module.exports = {
       expect(sourceMessage).to.be(errorMessage);
     },
     'should handle missing strict dependencies gracefully': async () => {
-      const cloudFunction = AWS(
-        {
+      const cloudFunction = AWS({
+        incarnateConfig: {
           subMap: {
             config: {
               subMap: {
@@ -122,13 +122,13 @@ module.exports = {
             }
           }
         },
-        [
+        allowedPaths: [
           '/package/service/method'
         ],
-        'http://example.com',
+        allowedOrigin: 'http://example.com',
         // IMPORTANT: Add a reasonable timeout.
-        1000
-      );
+        dependencyResolutionTimeoutMS: 1000
+      });
       const result = await cloudFunction(MockAPIGatewayEvent);
       const {
         statusCode,
@@ -141,8 +141,8 @@ module.exports = {
     },
     'should supply request specific built-in dependencies': async () => {
       const getDepPath = p => `${DEP_NAMES.INPUT}/${p}`;
-      const cloudFunction = AWS(
-        {
+      const cloudFunction = AWS({
+        incarnateConfig: {
           subMap: {
             package: {
               shared: {
@@ -163,13 +163,13 @@ module.exports = {
             }
           }
         },
-        [
+        allowedPaths: [
           '/package/service/method'
         ],
-        'http://example.com',
+        allowedOrigin: 'http://example.com',
         // IMPORTANT: Add a reasonable timeout.
-        1000
-      );
+        dependencyResolutionTimeoutMS: 1000
+      });
       const result = await cloudFunction(MockAPIGatewayEvent);
       const {
         statusCode,
