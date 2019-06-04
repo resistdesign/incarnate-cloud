@@ -4,6 +4,7 @@
   "description": "Cloud Function Middleware for Incarnate",
   "main": "src/index.jsx",
   "files": [
+    "src/Utils/",
     "src/Providers/",
     "src/index.jsx"
   ],
