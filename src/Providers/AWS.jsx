@@ -1,5 +1,6 @@
 import Incarnate, {SubMapDeclaration} from 'incarnate';
 import ParseCookies from 'cookie';
+import ServiceResponse from '../Utils/ServiceResponse';
 
 const PATH_DELIMITER = '/';
 const METHODS = {
@@ -163,6 +164,8 @@ export default ({
       } catch (error) {
         const {
           message,
+          data,
+          error: directError,
           source: {
             error: {
               message: sourceMessage
@@ -171,18 +174,24 @@ export default ({
             causePath
           } = {}
         } = error || {};
+        const responseData = error instanceof ServiceResponse ?
+          error :
+          (
+            directError instanceof ServiceResponse ?
+              directError :
+              {
+                message,
+                data,
+                source: {
+                  message: sourceMessage,
+                  path,
+                  causePath
+                }
+              }
+          );
+        const {statusCode = 500} = responseData;
 
-        return getResponseWithCORS(
-          500,
-          {
-            message,
-            source: {
-              message: sourceMessage,
-              path,
-              causePath
-            }
-          }
-        );
+        return getResponseWithCORS(statusCode, responseData);
       }
 
       const {[methodName]: serviceMethod} = serviceInstance;
