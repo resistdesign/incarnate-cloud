@@ -248,7 +248,7 @@
     "__docId__": 10,
     "kind": "file",
     "name": "src/Providers/AWS.jsx",
-    "content": "import Incarnate, {SubMapDeclaration} from 'incarnate';\nimport ParseCookies from 'cookie';\n\nconst PATH_DELIMITER = '/';\nconst METHODS = {\n  OPTIONS: 'OPTIONS'\n};\n\n/**\n * Built-in dependency names.\n * */\nexport const DEP_NAMES = {\n  INPUT: 'INPUT',\n  PACKAGES: 'PACKAGES',\n  HEADERS: 'HEADERS',\n  COOKIES: 'COOKIES',\n  PATH: 'PATH',\n  EVENT: 'EVENT',\n  CONTEXT: 'CONTEXT',\n  IDENTITY: 'IDENTITY'\n};\n\n// SECURITY: Don't call private methods on services.\nconst getMethodNameIsPrivate = (methodName = '') => methodName.charAt(0) === '_';\n\nconst getCleanPathParts = (path = '') => path\n  .split(PATH_DELIMITER)\n  .filter(p => !!p);\n\nconst getResponse = (statusCode = 200, value = undefined, headers = {}) => ({\n  statusCode,\n  headers: typeof value === 'undefined' ? {...headers} : {'Content-Type': 'application/json', ...headers},\n  body: typeof value === 'undefined' ? '' : JSON.stringify(value, null, '  ')\n});\n\nconst getCORSHeaders = (clientOrigin = '') => ({\n  'Access-Control-Allow-Origin': clientOrigin,\n  'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',\n  'Access-Control-Allow-Methods': 'OPTIONS, HEAD, GET, POST, PUT, PATCH, DELETE',\n  'Access-Control-Allow-Credentials': 'true'\n});\n\nconst getCleanHttpMethod = (method = 'POST') => `${method}`.toUpperCase();\n\n/**\n * Create an Incarnate managed Lambda handler.\n * @param {Object} config\n * @param {Object} config.incarnateConfig The incarnate configuration object.\n * @param {Array.<string>} config.allowedPaths A SECURITY measure to prevent access of values and methods outside of services.\n * @param {Object} config.allowedOrigin The allowed CORS origin returned to `OPTIONS` requests.\n * @param {number} config.dependencyResolutionTimeoutMS The maximum number of milliseconds allotted for resolving service dependencies. Default: 300000 (5 minutes)\n *\n * @returns {Function} The Lambda handler.\n * */\nexport default ({\n                  incarnateConfig = {},\n                  allowedPaths = [],\n                  allowedOrigin = '',\n                  dependencyResolutionTimeoutMS = 300000\n                } = {}) => {\n  const corsHeaders = getCORSHeaders(allowedOrigin);\n  const getResponseWithCORS = (statusCode = 200, value = undefined, headers = {}) => {\n    return getResponse(\n      statusCode,\n      value,\n      {\n        ...corsHeaders,\n        ...headers\n      }\n    );\n  };\n\n  return async (event) => {\n    const {\n      httpMethod = 'POST',\n      headers,\n      multiValueHeaders,\n      path = '',\n      body: bodyString = '[]'\n    } = event;\n    const cleanHttpMethod = getCleanHttpMethod(httpMethod);\n\n    if (cleanHttpMethod === METHODS.OPTIONS) {\n      return getResponseWithCORS(200);\n    }\n\n    // SECURITY: IMPORTANT: Only expose allowed paths. (`/package/service/method`)\n    if (allowedPaths.indexOf(path) === -1) {\n      return getResponseWithCORS(404, {message: 'Not Found'});\n    }\n\n    const body = JSON.parse(bodyString);\n    const {\n      subMap = {}\n    } = incarnateConfig;\n    const cleanPathParts = getCleanPathParts(path);\n    const cleanPath = cleanPathParts.join(PATH_DELIMITER);\n    const inc = new Incarnate(new SubMapDeclaration({\n      ...incarnateConfig,\n      pathDelimiter: PATH_DELIMITER,\n      subMap: {\n        [DEP_NAMES.INPUT]: {\n          subMap: {\n            [DEP_NAMES.HEADERS]: {\n              factory: () => ({\n                ...headers,\n                ...multiValueHeaders\n              })\n            },\n            [DEP_NAMES.COOKIES]: {\n              dependencies: {\n                suppliedHeaders: DEP_NAMES.HEADERS\n              },\n              factory: ({suppliedHeaders = {}} = {}) => {\n                const {Cookie: cookieString = ''} = suppliedHeaders;\n\n                return ParseCookies(cookieString);\n              }\n            },\n            [DEP_NAMES.PATH]: {\n              factory: () => cleanPath\n            },\n            [DEP_NAMES.EVENT]: {\n              factory: () => event\n            },\n            [DEP_NAMES.CONTEXT]: {\n              dependencies: {\n                event: DEP_NAMES.EVENT\n              },\n              factory: ({event: {requestContext = {}} = {}} = {}) => requestContext\n            },\n            [DEP_NAMES.IDENTITY]: {\n              dependencies: {\n                context: DEP_NAMES.CONTEXT\n              },\n              factory: ({context: {identity = {}} = {}} = {}) => identity\n            }\n          }\n        },\n        [DEP_NAMES.PACKAGES]: {\n          shared: {\n            [DEP_NAMES.INPUT]: DEP_NAMES.INPUT\n          },\n          subMap\n        }\n      }\n    }));\n    const [packageName, serviceName, methodName] = cleanPathParts;\n    const methodNameIsPrivate = getMethodNameIsPrivate(methodName);\n    const args = body instanceof Array ? body : [];\n\n    if (!!packageName && !!serviceName && !!methodName && !methodNameIsPrivate) {\n      const servicePath = [\n        DEP_NAMES.PACKAGES,\n        packageName,\n        serviceName\n      ];\n\n      let serviceInstance = {};\n\n      try {\n        serviceInstance = await inc.getResolvedPathAsync(servicePath, dependencyResolutionTimeoutMS);\n      } catch (error) {\n        const {\n          message,\n          source: {\n            error: {\n              message: sourceMessage\n            } = {},\n            path,\n            causePath\n          } = {}\n        } = error || {};\n\n        return getResponseWithCORS(\n          500,\n          {\n            message,\n            source: {\n              message: sourceMessage,\n              path,\n              causePath\n            }\n          }\n        );\n      }\n\n      const {[methodName]: serviceMethod} = serviceInstance;\n\n      if (serviceMethod instanceof Function) {\n        try {\n          const returnValue = await serviceMethod(...args);\n          const returnValueAsObject = returnValue instanceof Object ? returnValue : {};\n          const {statusCode = 200} = returnValueAsObject;\n\n          return getResponseWithCORS(statusCode, returnValue);\n        } catch (error) {\n          const errorAsObject = error instanceof Object ? error : {};\n          const {statusCode = 500} = errorAsObject;\n\n          return getResponseWithCORS(statusCode, error);\n        }\n      } else {\n        return getResponseWithCORS(404, {message: 'Not Found'});\n      }\n    } else {\n      return getResponseWithCORS(404, {message: 'Not Found'});\n    }\n  }\n};\n",
+    "content": "import Incarnate, {SubMapDeclaration} from 'incarnate';\nimport ParseCookies from 'cookie';\nimport ServiceResponse from '../Utils/ServiceResponse';\n\nconst PATH_DELIMITER = '/';\nconst METHODS = {\n  OPTIONS: 'OPTIONS'\n};\n\n/**\n * Built-in dependency names.\n * */\nexport const DEP_NAMES = {\n  INPUT: 'INPUT',\n  PACKAGES: 'PACKAGES',\n  HEADERS: 'HEADERS',\n  COOKIES: 'COOKIES',\n  PATH: 'PATH',\n  EVENT: 'EVENT',\n  CONTEXT: 'CONTEXT',\n  IDENTITY: 'IDENTITY'\n};\n\n// SECURITY: Don't call private methods on services.\nconst getMethodNameIsPrivate = (methodName = '') => methodName.charAt(0) === '_';\n\nconst getCleanPathParts = (path = '') => path\n  .split(PATH_DELIMITER)\n  .filter(p => !!p);\n\nconst getResponse = (statusCode = 200, value = undefined, headers = {}) => ({\n  statusCode,\n  headers: typeof value === 'undefined' ? {...headers} : {'Content-Type': 'application/json', ...headers},\n  body: typeof value === 'undefined' ? '' : JSON.stringify(value, null, '  ')\n});\n\nconst getCORSHeaders = (clientOrigin = '') => ({\n  'Access-Control-Allow-Origin': clientOrigin,\n  'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',\n  'Access-Control-Allow-Methods': 'OPTIONS, HEAD, GET, POST, PUT, PATCH, DELETE',\n  'Access-Control-Allow-Credentials': 'true'\n});\n\nconst getCleanHttpMethod = (method = 'POST') => `${method}`.toUpperCase();\n\n/**\n * Create an Incarnate managed Lambda handler.\n * @param {Object} config\n * @param {Object} config.incarnateConfig The incarnate configuration object.\n * @param {Array.<string>} config.allowedPaths A SECURITY measure to prevent access of values and methods outside of services.\n * @param {Object} config.allowedOrigin The allowed CORS origin returned to `OPTIONS` requests.\n * @param {number} config.dependencyResolutionTimeoutMS The maximum number of milliseconds allotted for resolving service dependencies. Default: 300000 (5 minutes)\n *\n * @returns {Function} The Lambda handler.\n * */\nexport default ({\n                  incarnateConfig = {},\n                  allowedPaths = [],\n                  allowedOrigin = '',\n                  dependencyResolutionTimeoutMS = 300000\n                } = {}) => {\n  const corsHeaders = getCORSHeaders(allowedOrigin);\n  const getResponseWithCORS = (statusCode = 200, value = undefined, headers = {}) => {\n    return getResponse(\n      statusCode,\n      value,\n      {\n        ...corsHeaders,\n        ...headers\n      }\n    );\n  };\n\n  return async (event) => {\n    const {\n      httpMethod = 'POST',\n      headers,\n      multiValueHeaders,\n      path = '',\n      body: bodyString = '[]'\n    } = event;\n    const cleanHttpMethod = getCleanHttpMethod(httpMethod);\n\n    if (cleanHttpMethod === METHODS.OPTIONS) {\n      return getResponseWithCORS(200);\n    }\n\n    // SECURITY: IMPORTANT: Only expose allowed paths. (`/package/service/method`)\n    if (allowedPaths.indexOf(path) === -1) {\n      return getResponseWithCORS(404, {message: 'Not Found'});\n    }\n\n    const body = JSON.parse(bodyString);\n    const {\n      subMap = {}\n    } = incarnateConfig;\n    const cleanPathParts = getCleanPathParts(path);\n    const cleanPath = cleanPathParts.join(PATH_DELIMITER);\n    const inc = new Incarnate(new SubMapDeclaration({\n      ...incarnateConfig,\n      pathDelimiter: PATH_DELIMITER,\n      subMap: {\n        [DEP_NAMES.INPUT]: {\n          subMap: {\n            [DEP_NAMES.HEADERS]: {\n              factory: () => ({\n                ...headers,\n                ...multiValueHeaders\n              })\n            },\n            [DEP_NAMES.COOKIES]: {\n              dependencies: {\n                suppliedHeaders: DEP_NAMES.HEADERS\n              },\n              factory: ({suppliedHeaders = {}} = {}) => {\n                const {Cookie: cookieString = ''} = suppliedHeaders;\n\n                return ParseCookies(cookieString);\n              }\n            },\n            [DEP_NAMES.PATH]: {\n              factory: () => cleanPath\n            },\n            [DEP_NAMES.EVENT]: {\n              factory: () => event\n            },\n            [DEP_NAMES.CONTEXT]: {\n              dependencies: {\n                event: DEP_NAMES.EVENT\n              },\n              factory: ({event: {requestContext = {}} = {}} = {}) => requestContext\n            },\n            [DEP_NAMES.IDENTITY]: {\n              dependencies: {\n                context: DEP_NAMES.CONTEXT\n              },\n              factory: ({context: {identity = {}} = {}} = {}) => identity\n            }\n          }\n        },\n        [DEP_NAMES.PACKAGES]: {\n          shared: {\n            [DEP_NAMES.INPUT]: DEP_NAMES.INPUT\n          },\n          subMap\n        }\n      }\n    }));\n    const [packageName, serviceName, methodName] = cleanPathParts;\n    const methodNameIsPrivate = getMethodNameIsPrivate(methodName);\n    const args = body instanceof Array ? body : [];\n\n    if (!!packageName && !!serviceName && !!methodName && !methodNameIsPrivate) {\n      const servicePath = [\n        DEP_NAMES.PACKAGES,\n        packageName,\n        serviceName\n      ];\n\n      let serviceInstance = {};\n\n      try {\n        serviceInstance = await inc.getResolvedPathAsync(servicePath, dependencyResolutionTimeoutMS);\n      } catch (error) {\n        const {\n          message,\n          data,\n          error: directError,\n          source: {\n            error: {\n              message: sourceMessage\n            } = {},\n            path,\n            causePath\n          } = {}\n        } = error || {};\n        const responseData = error instanceof ServiceResponse ?\n          error :\n          (\n            directError instanceof ServiceResponse ?\n              directError :\n              {\n                message,\n                data,\n                source: {\n                  message: sourceMessage,\n                  path,\n                  causePath\n                }\n              }\n          );\n        const {statusCode = 500} = responseData;\n\n        return getResponseWithCORS(statusCode, responseData);\n      }\n\n      const {[methodName]: serviceMethod} = serviceInstance;\n\n      if (serviceMethod instanceof Function) {\n        try {\n          const returnValue = await serviceMethod(...args);\n          const returnValueAsObject = returnValue instanceof Object ? returnValue : {};\n          const {statusCode = 200} = returnValueAsObject;\n\n          return getResponseWithCORS(statusCode, returnValue);\n        } catch (error) {\n          const errorAsObject = error instanceof Object ? error : {};\n          const {statusCode = 500} = errorAsObject;\n\n          return getResponseWithCORS(statusCode, error);\n        }\n      } else {\n        return getResponseWithCORS(404, {message: 'Not Found'});\n      }\n    } else {\n      return getResponseWithCORS(404, {message: 'Not Found'});\n    }\n  }\n};\n",
     "static": true,
     "longname": "/Users/ryangraff/projects/incarnate-cloud/src/Providers/AWS.jsx",
     "access": "public",
@@ -267,7 +267,7 @@
     "importPath": "incarnate-cloud/src/Providers/AWS.jsx",
     "importStyle": null,
     "description": null,
-    "lineNumber": 4,
+    "lineNumber": 5,
     "undocument": true,
     "type": {
       "types": [
@@ -288,7 +288,7 @@
     "importPath": "incarnate-cloud/src/Providers/AWS.jsx",
     "importStyle": null,
     "description": null,
-    "lineNumber": 5,
+    "lineNumber": 6,
     "undocument": true,
     "type": {
       "types": [
@@ -309,7 +309,7 @@
     "importPath": "incarnate-cloud/src/Providers/AWS.jsx",
     "importStyle": "{DEP_NAMES}",
     "description": "Built-in dependency names.",
-    "lineNumber": 12,
+    "lineNumber": 13,
     "type": {
       "types": [
         "{\"INPUT\": string, \"PACKAGES\": string, \"HEADERS\": string, \"COOKIES\": string, \"PATH\": string, \"EVENT\": string, \"CONTEXT\": string, \"IDENTITY\": string}"
@@ -330,7 +330,7 @@
     "importPath": "incarnate-cloud/src/Providers/AWS.jsx",
     "importStyle": null,
     "description": null,
-    "lineNumber": 24,
+    "lineNumber": 25,
     "undocument": true,
     "params": [
       {
@@ -360,7 +360,7 @@
     "importPath": "incarnate-cloud/src/Providers/AWS.jsx",
     "importStyle": null,
     "description": null,
-    "lineNumber": 26,
+    "lineNumber": 27,
     "undocument": true,
     "params": [
       {
@@ -390,7 +390,7 @@
     "importPath": "incarnate-cloud/src/Providers/AWS.jsx",
     "importStyle": null,
     "description": null,
-    "lineNumber": 30,
+    "lineNumber": 31,
     "undocument": true,
     "params": [
       {
@@ -438,7 +438,7 @@
     "importPath": "incarnate-cloud/src/Providers/AWS.jsx",
     "importStyle": null,
     "description": null,
-    "lineNumber": 36,
+    "lineNumber": 37,
     "undocument": true,
     "params": [
       {
@@ -468,7 +468,7 @@
     "importPath": "incarnate-cloud/src/Providers/AWS.jsx",
     "importStyle": null,
     "description": null,
-    "lineNumber": 43,
+    "lineNumber": 44,
     "undocument": true,
     "params": [
       {
@@ -498,7 +498,7 @@
     "importPath": "incarnate-cloud/src/Providers/AWS.jsx",
     "importStyle": "AWS",
     "description": "Create an Incarnate managed Lambda handler.",
-    "lineNumber": 55,
+    "lineNumber": 56,
     "unknown": [
       {
         "tagName": "@returns",

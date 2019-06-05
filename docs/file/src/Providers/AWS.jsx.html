@@ -44,6 +44,7 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/Providers/AWS.jsx</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Incarnate, {SubMapDeclaration} from &apos;incarnate&apos;;
 import ParseCookies from &apos;cookie&apos;;
+import ServiceResponse from &apos;../Utils/ServiceResponse&apos;;
 
 const PATH_DELIMITER = &apos;/&apos;;
 const METHODS = {
@@ -207,6 +208,8 @@ export default ({
       } catch (error) {
         const {
           message,
+          data,
+          error: directError,
           source: {
             error: {
               message: sourceMessage
@@ -215,18 +218,24 @@ export default ({
             causePath
           } = {}
         } = error || {};
+        const responseData = error instanceof ServiceResponse ?
+          error :
+          (
+            directError instanceof ServiceResponse ?
+              directError :
+              {
+                message,
+                data,
+                source: {
+                  message: sourceMessage,
+                  path,
+                  causePath
+                }
+              }
+          );
+        const {statusCode = 500} = responseData;
 
-        return getResponseWithCORS(
-          500,
-          {
-            message,
-            source: {
-              message: sourceMessage,
-              path,
-              causePath
-            }
-          }
-        );
+        return getResponseWithCORS(statusCode, responseData);
       }
 
       const {[methodName]: serviceMethod} = serviceInstance;
