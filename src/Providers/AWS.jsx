@@ -1,5 +1,6 @@
 import Incarnate, {SubMapDeclaration} from 'incarnate';
 import ParseCookies from 'cookie';
+import toCamelCase from 'lodash.camelcase';
 import ServiceResponse from '../Utils/ServiceResponse';
 
 const PATH_DELIMITER = '/';
@@ -194,7 +195,8 @@ export default ({
         return getResponseWithCORS(statusCode, responseData);
       }
 
-      const {[methodName]: serviceMethod} = serviceInstance;
+      const camelCaseMethodName = toCamelCase(methodName);
+      const {[camelCaseMethodName]: serviceMethod} = serviceInstance;
 
       if (serviceMethod instanceof Function) {
         try {

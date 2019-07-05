@@ -25,7 +25,8 @@
   "license": "MIT",
   "dependencies": {
     "cookie": "^0.4.0",
-    "incarnate": "^6.0.0"
+    "incarnate": "^6.0.0",
+    "lodash.camelcase": "^4.3.0"
   },
   "devDependencies": {
     "esdoc": "^1.1.0",

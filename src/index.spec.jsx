@@ -14,7 +14,7 @@ module.exports = {
                 service: {
                   factory: () => {
                     return {
-                      method: a1 => a1
+                      methodName: a1 => a1
                     };
                   }
                 }
@@ -23,7 +23,7 @@ module.exports = {
           }
         },
         allowedPaths: [
-          '/package/service/method'
+          '/package/service/method-name'
         ],
         allowedOrigin: 'http://example.com'
       });
@@ -64,7 +64,7 @@ module.exports = {
                   strict: true,
                   factory: () => {
                     return {
-                      method: a1 => a1
+                      methodName: a1 => a1
                     };
                   }
                 }
@@ -73,7 +73,7 @@ module.exports = {
           }
         },
         allowedPaths: [
-          '/package/service/method'
+          '/package/service/method-name'
         ],
         allowedOrigin: 'http://example.com'
       });
@@ -114,7 +114,7 @@ module.exports = {
                   strict: true,
                   factory: () => {
                     return {
-                      method: a1 => a1
+                      methodName: a1 => a1
                     };
                   }
                 }
@@ -123,7 +123,7 @@ module.exports = {
           }
         },
         allowedPaths: [
-          '/package/service/method'
+          '/package/service/method-name'
         ],
         allowedOrigin: 'http://example.com',
         // IMPORTANT: Add a reasonable timeout.
@@ -156,7 +156,7 @@ module.exports = {
                     identity: getDepPath(DEP_NAMES.IDENTITY)
                   },
                   factory: d => ({
-                    method: () => d
+                    methodName: () => d
                   })
                 }
               }
@@ -164,7 +164,7 @@ module.exports = {
           }
         },
         allowedPaths: [
-          '/package/service/method'
+          '/package/service/method-name'
         ],
         allowedOrigin: 'http://example.com',
         // IMPORTANT: Add a reasonable timeout.

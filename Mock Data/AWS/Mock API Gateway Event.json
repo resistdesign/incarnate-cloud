@@ -2,7 +2,7 @@
   "test": "TEST_EVENT",
   "httpMethod": "POST",
   "body": "[\"Arguments in JSON\"]",
-  "path": "/package/service/method",
+  "path": "/package/service/method-name",
   "headers": {},
   "multiValueHeaders": {},
   "requestContext": {
