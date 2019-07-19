@@ -2,29 +2,18 @@ import Incarnate, {SubMapDeclaration} from 'incarnate';
 import ParseCookies from 'cookie';
 import toCamelCase from 'lodash.camelcase';
 import ServiceResponse from '../Utils/ServiceResponse';
-import {DEP_NAMES, METHODS, PATH_DELIMITER} from './Constants';
-
-// SECURITY: Don't call private methods on services.
-const getMethodNameIsPrivate = (methodName = '') => methodName.charAt(0) === '_';
-
-const getCleanPathParts = (path = '') => path
-  .split(PATH_DELIMITER)
-  .filter(p => !!p);
-
-const getResponse = (statusCode = 200, value = undefined, headers = {}) => ({
-  statusCode,
-  headers: typeof value === 'undefined' ? {...headers} : {'Content-Type': 'application/json', ...headers},
-  body: typeof value === 'undefined' ? '' : JSON.stringify(value, null, '  ')
-});
-
-const getCORSHeaders = (clientOrigin = '') => ({
-  'Access-Control-Allow-Origin': clientOrigin,
-  'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
-  'Access-Control-Allow-Methods': 'OPTIONS, HEAD, GET, POST, PUT, PATCH, DELETE',
-  'Access-Control-Allow-Credentials': 'true'
-});
-
-const getCleanHttpMethod = (method = 'POST') => `${method}`.toUpperCase();
+import {
+  DEP_NAMES,
+  METHODS,
+  PATH_DELIMITER
+} from './Constants';
+import {
+  getCleanHttpMethod,
+  getCleanPathParts,
+  getCORSHeaders,
+  getMethodNameIsPrivate,
+  getResponse
+} from './Utils';
 
 /**
  * Create an Incarnate managed Lambda handler.
