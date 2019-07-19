@@ -1,7 +1,7 @@
 import expect from 'expect.js';
 import {AWS} from './index.jsx';
 import MockAPIGatewayEvent from '../Mock Data/AWS/Mock API Gateway Event';
-import {DEP_NAMES} from './Providers/AWS';
+import {DEP_NAMES} from './Providers/Constants';
 
 module.exports = {
   AWS: {
