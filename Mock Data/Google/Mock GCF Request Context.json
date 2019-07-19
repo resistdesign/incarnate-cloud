@@ -3,31 +3,18 @@
   "httpVersionMinor": 1,
   "httpVersion": "1.1",
   "headers": {
-    "host": "us-central1-revelatio-165320.cloudfunctions.net",
-    "user-agent": "curl/7.43.0 AppEngine-Google; (+http://code.google.com/appengine; appid: s~gcf-http-proxy)",
-    "accept": "*/*",
-    "function-execution-id": "iwwhmh5om3tq",
-    "x-appengine-api-ticket": "c8972c61af61e994",
-    "x-appengine-city": "san francisco",
-    "x-appengine-citylatlong": "37.774929,-122.419416",
-    "x-appengine-country": "ZZ",
-    "x-appengine-https": "on",
-    "x-appengine-inbound-appid": "gcf-http-proxy",
-    "x-appengine-region": "ca",
-    "x-appengine-user-ip": "0.1.0.40",
-    "x-cloud-trace-context": "d4106ea1f08a0ec355e6014fcc600464/18238227398167355466",
-    "x-forwarded-for": "2607:f598:b199:eb00:1919:d4c:c1e0:c4e0",
-    "x-zoo": "app-id=gcf-http-proxy,domain=gmail.com,host=*.cloudfunctions.net",
-    "accept-encoding": "gzip"
+    "content-type": "application/json"
   },
-  "url": "",
-  "method": "GET",
+  "url": "https://example.com/package/service/method-name",
+  "method": "POST",
   "baseUrl": "",
   "originalUrl": "",
   "params": {
     "0": ""
   },
   "query": {},
-  "body": [],
-  "rawBody": "[]"
+  "body": [
+    "Arguments in JSON"
+  ],
+  "rawBody": "[\"Arguments in JSON\"]"
 }
