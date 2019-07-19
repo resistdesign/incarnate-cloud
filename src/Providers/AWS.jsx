@@ -5,7 +5,7 @@ import {getRequestResponse} from './Common';
  * @param {Object} config
  * @param {Object} config.incarnateConfig The incarnate configuration object.
  * @param {Array.<string>} config.allowedPaths A SECURITY measure to prevent access of values and methods outside of services.
- * @param {Object} config.allowedOrigin The allowed CORS origin returned to `OPTIONS` requests.
+ * @param {string} config.allowedOrigin The allowed CORS origin returned to `OPTIONS` requests.
  * @param {number} config.dependencyResolutionTimeoutMS The maximum number of milliseconds allotted for resolving service dependencies. Default: 300000 (5 minutes)
  *
  * @returns {Function} The Lambda handler.
@@ -16,11 +16,11 @@ export default ({
                   allowedOrigin = '',
                   dependencyResolutionTimeoutMS = 300000
                 } = {}) => {
-  return async (event) => {
+  return async (event = {}) => {
     const {
       httpMethod = 'POST',
-      headers,
-      multiValueHeaders,
+      headers = {},
+      multiValueHeaders = {},
       path = '',
       body: bodyString = '[]'
     } = event;

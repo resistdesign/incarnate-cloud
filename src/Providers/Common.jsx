@@ -28,8 +28,8 @@ export const getRequestResponse = async ({
                                            dependencyResolutionTimeoutMS = 300000,
                                            event = {},
                                            httpMethod = 'POST',
-                                           headers,
-                                           multiValueHeaders,
+                                           headers = {},
+                                           multiValueHeaders = {},
                                            path = '',
                                            bodyString = '[]'
                                          } = {}) => {
