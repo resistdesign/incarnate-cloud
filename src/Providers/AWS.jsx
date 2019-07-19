@@ -2,12 +2,7 @@ import Incarnate, {SubMapDeclaration} from 'incarnate';
 import ParseCookies from 'cookie';
 import toCamelCase from 'lodash.camelcase';
 import ServiceResponse from '../Utils/ServiceResponse';
-import {DEP_NAMES} from './Constants';
-
-const PATH_DELIMITER = '/';
-const METHODS = {
-  OPTIONS: 'OPTIONS'
-};
+import {DEP_NAMES, METHODS, PATH_DELIMITER} from './Constants';
 
 // SECURITY: Don't call private methods on services.
 const getMethodNameIsPrivate = (methodName = '') => methodName.charAt(0) === '_';

@@ -11,3 +11,15 @@ export const DEP_NAMES = {
   CONTEXT: 'CONTEXT',
   IDENTITY: 'IDENTITY'
 };
+
+export const PATH_DELIMITER = '/';
+
+export const METHODS = {
+  OPTIONS: 'OPTIONS',
+  HEAD: 'HEAD',
+  GET: 'GET',
+  POST: 'POST',
+  PUT: 'PUT',
+  PATCH: 'PATCH',
+  DELETE: 'DELETE'
+};
