@@ -1,3 +1,10 @@
+/**
+ * @typedef {Object} HandlerResponse
+ * @property {number|string} statusCode The response HTTP status code.
+ * @property {Object} headers The headers object.
+ * @property {string} body A JSON string representing the return value of a function.
+ * */
+
 // SECURITY: Don't call private methods on services.
 import {PATH_DELIMITER} from './Constants';
 
@@ -7,6 +14,9 @@ export const getCleanPathParts = (path = '') => path
   .split(PATH_DELIMITER)
   .filter(p => !!p);
 
+/**
+ * @returns {HandlerResponse} The handler response object.
+ * */
 export const getResponse = (statusCode = 200, value = undefined, headers = {}) => ({
   statusCode,
   headers: typeof value === 'undefined' ? {...headers} : {'Content-Type': 'application/json', ...headers},

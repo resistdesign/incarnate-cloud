@@ -19,7 +19,7 @@ import toCamelCase from 'lodash.camelcase';
  * @param {string} config.path The HTTP request path.
  * @param {string} config.bodyString The raw HTTP body as a string that will be parsed as JSON and expected to be an Array of arguments to the destination function.
  *
- * @returns {*} The return value of the destination function.
+ * @returns {HandlerResponse} The handler response object.
  * */
 export const getRequestResponse = async ({
                                            incarnateConfig = {},
