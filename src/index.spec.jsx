@@ -1,8 +1,11 @@
 import expect from 'expect.js';
-import {AWS, Google} from './index.jsx';
+import {
+  DEP_NAMES,
+  AWS,
+  Google
+} from './index.jsx';
 import MockAPIGatewayEvent from '../Mock Data/AWS/Mock API Gateway Event';
 import MockGCFRequestContext from '../Mock Data/Google/Mock GCF Request Context';
-import {DEP_NAMES} from './Providers/Constants';
 
 const MockResponseInstance = {
   set: () => {
