@@ -1,4 +1,5 @@
 {
+  "test": "TEST_EVENT",
   "httpVersionMajor": 1,
   "httpVersionMinor": 1,
   "httpVersion": "1.1",
@@ -16,5 +17,11 @@
   "body": [
     "Arguments in JSON"
   ],
-  "rawBody": "[\"Arguments in JSON\"]"
+  "rawBody": "[\"Arguments in JSON\"]",
+  "requestContext": {
+    "test": "TEST_CONTEXT",
+    "identity": {
+      "test": "TEST_IDENTITY"
+    }
+  }
 }

@@ -7,16 +7,25 @@ import {
 import MockAPIGatewayEvent from '../Mock Data/AWS/Mock API Gateway Event';
 import MockGCFRequestContext from '../Mock Data/Google/Mock GCF Request Context';
 
-const MockResponseInstance = {
-  set: () => {
-  },
-  status: () => ({
-    send: () => {
-    }
-  }),
-  send: () => {
-  }
-};
+class MockResponse {
+  response = {
+    statusCode: 200,
+    headers: {},
+    body: ''
+  };
+
+  set = (key, value) => {
+    this.response.headers[key] = value;
+  };
+
+  status = (statusCode) => {
+    this.response.statusCode = statusCode;
+
+    return this;
+  };
+
+  send = (body) => this.response.body = body;
+}
 
 module.exports = {
   AWS: {
@@ -231,9 +240,13 @@ module.exports = {
         ],
         allowedOrigin: 'http://example.com'
       });
+      const MockResponseInstance = new MockResponse();
+
+      await cloudFunction(MockGCFRequestContext, MockResponseInstance);
+
       const {
         body: responseBody
-      } = await cloudFunction(MockGCFRequestContext, MockResponseInstance);
+      } = MockResponseInstance.response || {};
 
       expect(responseBody).to.be.a('string');
 
@@ -281,11 +294,14 @@ module.exports = {
         ],
         allowedOrigin: 'http://example.com'
       });
-      const result = await cloudFunction(MockGCFRequestContext, MockResponseInstance);
+      const MockResponseInstance = new MockResponse();
+
+      await cloudFunction(MockGCFRequestContext, MockResponseInstance);
+
       const {
         statusCode,
         body: responseBody = 'undefined'
-      } = result || {};
+      } = MockResponseInstance.response || {};
       const {
         source: {
           message: sourceMessage
@@ -333,11 +349,14 @@ module.exports = {
         // IMPORTANT: Add a reasonable timeout.
         dependencyResolutionTimeoutMS: 1000
       });
-      const result = await cloudFunction(MockGCFRequestContext, MockResponseInstance);
+      const MockResponseInstance = new MockResponse();
+
+      await cloudFunction(MockGCFRequestContext, MockResponseInstance);
+
       const {
         statusCode,
         body: responseBody = '{}'
-      } = result || {};
+      } = MockResponseInstance.response || {};
       const {message} = JSON.parse(responseBody) || {};
 
       expect(statusCode).to.be(500);
@@ -374,11 +393,14 @@ module.exports = {
         // IMPORTANT: Add a reasonable timeout.
         dependencyResolutionTimeoutMS: 1000
       });
-      const result = await cloudFunction(MockGCFRequestContext, MockResponseInstance);
+      const MockResponseInstance = new MockResponse();
+
+      await cloudFunction(MockGCFRequestContext, MockResponseInstance);
+
       const {
         statusCode,
         body: responseBody = '{}'
-      } = result || {};
+      } = MockResponseInstance.response || {};
       const {
         event,
         context,
