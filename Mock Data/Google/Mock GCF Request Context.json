@@ -1,0 +1,27 @@
+{
+  "test": "TEST_EVENT",
+  "httpVersionMajor": 1,
+  "httpVersionMinor": 1,
+  "httpVersion": "1.1",
+  "headers": {
+    "content-type": "application/json"
+  },
+  "url": "https://example.com/package/service/method-name",
+  "method": "POST",
+  "baseUrl": "",
+  "originalUrl": "",
+  "params": {
+    "0": ""
+  },
+  "query": {},
+  "body": [
+    "Arguments in JSON"
+  ],
+  "rawBody": "[\"Arguments in JSON\"]",
+  "requestContext": {
+    "test": "TEST_CONTEXT",
+    "identity": {
+      "test": "TEST_IDENTITY"
+    }
+  }
+}
