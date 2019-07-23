@@ -1,4 +1,4 @@
-import {URL} from 'url';
+import {parse as ParseURL} from 'url';
 import {getRequestResponse} from './Common';
 
 /**
@@ -26,7 +26,7 @@ export default ({
     } = req;
     const {
       pathname: path = ''
-    } = new URL(url);
+    } = ParseURL(url);
     const {
       statusCode = 200,
       headers: responseHeaders = {},

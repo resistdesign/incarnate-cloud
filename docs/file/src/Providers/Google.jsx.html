@@ -54,7 +54,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Providers/Google.jsx</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import {URL} from &apos;url&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import {parse as ParseURL} from &apos;url&apos;;
 import {getRequestResponse} from &apos;./Common&apos;;
 
 /**
@@ -82,7 +82,7 @@ export default ({
     } = req;
     const {
       pathname: path = &apos;&apos;
-    } = new URL(url);
+    } = ParseURL(url);
     const {
       statusCode = 200,
       headers: responseHeaders = {},

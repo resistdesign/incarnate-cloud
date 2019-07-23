@@ -6,7 +6,7 @@
   "headers": {
     "content-type": "application/json"
   },
-  "url": "https://example.com/package/service/method-name",
+  "url": "/package/service/method-name",
   "method": "POST",
   "baseUrl": "",
   "originalUrl": "",
