@@ -1,7 +1,7 @@
 {
-  "coverage": "36%",
-  "expectCount": 25,
-  "actualCount": 9,
+  "coverage": "41.37%",
+  "expectCount": 29,
+  "actualCount": 12,
   "files": {
     "src/Providers/AWS/ConfigLoader.jsx": {
       "expectCount": 8,
@@ -13,16 +13,36 @@
       ]
     },
     "src/Providers/AWS.jsx": {
-      "expectCount": 9,
-      "actualCount": 2,
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "src/Providers/Common.jsx": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "src/Providers/Constants.jsx": {
+      "expectCount": 3,
+      "actualCount": 1,
       "undocumentLines": [
-        5,
-        6,
-        25,
-        27,
-        31,
-        37,
-        44
+        15,
+        17
+      ]
+    },
+    "src/Providers/Google.jsx": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "src/Providers/Utils.jsx": {
+      "expectCount": 5,
+      "actualCount": 1,
+      "undocumentLines": [
+        11,
+        13,
+        26,
+        33
       ]
     },
     "src/Utils/ServiceResponse.jsx": {
@@ -35,12 +55,14 @@
       ]
     },
     "src/index.jsx": {
-      "expectCount": 3,
+      "expectCount": 5,
       "actualCount": 0,
       "undocumentLines": [
-        5,
         7,
-        8
+        9,
+        11,
+        12,
+        13
       ]
     }
   }

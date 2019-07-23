@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl" href="../">
-  <title data-ice="title">Typedef | incarnate-cloud</title>
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">src/Providers/Utils.jsx | incarnate-cloud</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -53,206 +53,42 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1 data-ice="title">Typedef</h1>
-<div data-ice="summaries"><table class="summary" data-ice="summary">
-  <thead><tr><td data-ice="title" colspan="3">Static Public Summary</td></tr></thead>
-  <tbody>
-  
-  <tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
-          <span class="code" data-ice="name"><span><a href="typedef/index.html#static-typedef-HandlerResponse">HandlerResponse</a></span></span><span class="code" data-ice="signature">: <span>Object</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
-          <span class="code" data-ice="name"><span><a href="typedef/index.html#static-typedef-ISystemsManager">ISystemsManager</a></span></span><span class="code" data-ice="signature">: <span>Object</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-</tbody>
-</table>
-</div>
-<div data-ice="details"><h2 data-ice="title">Static Public </h2>
+<div class="content" data-ice="content"><h1 data-ice="title">src/Providers/Utils.jsx</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * @typedef {Object} HandlerResponse
+ * @property {number|string} statusCode The response HTTP status code.
+ * @property {Object} headers The headers object.
+ * @property {string} body A JSON string representing the return value of a function.
+ * */
 
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="static-typedef-HandlerResponse">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span class="code" data-ice="name">HandlerResponse</span><span class="code" data-ice="signature">: <span>Object</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/Providers/Utils.jsx.html#lineNumber9">source</a></span></span>
-    </span>
-  </h3>
+// SECURITY: Don&apos;t call private methods on services.
+import {PATH_DELIMITER} from &apos;./Constants&apos;;
 
-  
-  
-  
-  
+export const getMethodNameIsPrivate = (methodName = &apos;&apos;) =&gt; methodName.charAt(0) === &apos;_&apos;;
 
-  
+export const getCleanPathParts = (path = &apos;&apos;) =&gt; path
+  .split(PATH_DELIMITER)
+  .filter(p =&gt; !!p);
 
-  <div data-ice="properties"><div data-ice="properties">
-  <h4 data-ice="title">Properties:</h4>
-  <table class="params">
-    <thead>
-    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-    
-    <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">statusCode</td>
-      <td data-ice="type" class="code"><span>number</span> | <span>string</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"><p>The response HTTP status code.</p>
-</td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">headers</td>
-      <td data-ice="type" class="code"><span>Object</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"><p>The headers object.</p>
-</td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">body</td>
-      <td data-ice="type" class="code"><span>string</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"><p>A JSON string representing the return value of a function.</p>
-</td>
-    </tr>
-</tbody>
-  </table>
-</div>
-</div>
+/**
+ * @returns {HandlerResponse} The handler response object.
+ * */
+export const getResponse = (statusCode = 200, value = undefined, headers = {}) =&gt; ({
+  statusCode,
+  headers: typeof value === &apos;undefined&apos; ? {...headers} : {&apos;Content-Type&apos;: &apos;application/json&apos;, ...headers},
+  body: typeof value === &apos;undefined&apos; ? &apos;&apos; : JSON.stringify(value, null, &apos;  &apos;)
+});
 
-  
+export const getCORSHeaders = (clientOrigin = &apos;&apos;) =&gt; ({
+  &apos;Access-Control-Allow-Origin&apos;: clientOrigin,
+  &apos;Access-Control-Allow-Headers&apos;: &apos;Origin, X-Requested-With, Content-Type, Accept, Authorization&apos;,
+  &apos;Access-Control-Allow-Methods&apos;: &apos;OPTIONS, HEAD, GET, POST, PUT, PATCH, DELETE&apos;,
+  &apos;Access-Control-Allow-Credentials&apos;: &apos;true&apos;
+});
 
-  
+export const getCleanHttpMethod = (method = &apos;POST&apos;) =&gt; `${method}`.toUpperCase();
+</code></pre>
 
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="static-typedef-ISystemsManager">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span class="code" data-ice="name">ISystemsManager</span><span class="code" data-ice="signature">: <span>Object</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/Providers/AWS/ConfigLoader.jsx.html#lineNumberundefined">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties"><div data-ice="properties">
-  <h4 data-ice="title">Properties:</h4>
-  <table class="params">
-    <thead>
-    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-    
-    <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">getParameter</td>
-      <td data-ice="type" class="code"><span>Function</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-</tbody>
-  </table>
-</div>
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-</div>
 </div>
 
 <footer class="footer">

@@ -24,9 +24,39 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "incarnate-cloud/src/providers/aws.jsx~dep_names",
+    "incarnate-cloud/src/providers/constants.jsx~dep_names",
     "variable/index.html#static-variable-DEP_NAMES",
-    "<span>DEP_NAMES</span> <span class=\"search-result-import-path\">incarnate-cloud/src/Providers/AWS.jsx</span>",
+    "<span>DEP_NAMES</span> <span class=\"search-result-import-path\">incarnate-cloud/src/Providers/Constants.jsx</span>",
+    "variable"
+  ],
+  [
+    "incarnate-cloud~dep_names",
+    "variable/index.html#static-variable-DEP_NAMES",
+    "<span>DEP_NAMES</span> <span class=\"search-result-import-path\">incarnate-cloud</span>",
+    "variable"
+  ],
+  [
+    "incarnate-cloud/src/providers/google.jsx~google",
+    "function/index.html#static-function-Google",
+    "<span>Google</span> <span class=\"search-result-import-path\">incarnate-cloud/src/Providers/Google.jsx</span>",
+    "function"
+  ],
+  [
+    "incarnate-cloud~google",
+    "variable/index.html#static-variable-Google",
+    "<span>Google</span> <span class=\"search-result-import-path\">incarnate-cloud</span>",
+    "variable"
+  ],
+  [
+    "incarnate-cloud/src/providers/constants.jsx~methods",
+    "variable/index.html#static-variable-METHODS",
+    "<span>METHODS</span> <span class=\"search-result-import-path\">incarnate-cloud/src/Providers/Constants.jsx</span>",
+    "variable"
+  ],
+  [
+    "incarnate-cloud/src/providers/constants.jsx~path_delimiter",
+    "variable/index.html#static-variable-PATH_DELIMITER",
+    "<span>PATH_DELIMITER</span> <span class=\"search-result-import-path\">incarnate-cloud/src/Providers/Constants.jsx</span>",
     "variable"
   ],
   [
@@ -40,6 +70,42 @@ window.esdocSearchIndex = [
     "variable/index.html#static-variable-ServiceResponse",
     "<span>ServiceResponse</span> <span class=\"search-result-import-path\">incarnate-cloud</span>",
     "variable"
+  ],
+  [
+    "incarnate-cloud/src/providers/utils.jsx~getcorsheaders",
+    "function/index.html#static-function-getCORSHeaders",
+    "<span>getCORSHeaders</span> <span class=\"search-result-import-path\">incarnate-cloud/src/Providers/Utils.jsx</span>",
+    "function"
+  ],
+  [
+    "incarnate-cloud/src/providers/utils.jsx~getcleanhttpmethod",
+    "function/index.html#static-function-getCleanHttpMethod",
+    "<span>getCleanHttpMethod</span> <span class=\"search-result-import-path\">incarnate-cloud/src/Providers/Utils.jsx</span>",
+    "function"
+  ],
+  [
+    "incarnate-cloud/src/providers/utils.jsx~getcleanpathparts",
+    "function/index.html#static-function-getCleanPathParts",
+    "<span>getCleanPathParts</span> <span class=\"search-result-import-path\">incarnate-cloud/src/Providers/Utils.jsx</span>",
+    "function"
+  ],
+  [
+    "incarnate-cloud/src/providers/utils.jsx~getmethodnameisprivate",
+    "function/index.html#static-function-getMethodNameIsPrivate",
+    "<span>getMethodNameIsPrivate</span> <span class=\"search-result-import-path\">incarnate-cloud/src/Providers/Utils.jsx</span>",
+    "function"
+  ],
+  [
+    "incarnate-cloud/src/providers/common.jsx~getrequestresponse",
+    "function/index.html#static-function-getRequestResponse",
+    "<span>getRequestResponse</span> <span class=\"search-result-import-path\">incarnate-cloud/src/Providers/Common.jsx</span>",
+    "function"
+  ],
+  [
+    "incarnate-cloud/src/providers/utils.jsx~getresponse",
+    "function/index.html#static-function-getResponse",
+    "<span>getResponse</span> <span class=\"search-result-import-path\">incarnate-cloud/src/Providers/Utils.jsx</span>",
+    "function"
   ],
   [
     "src/providers/aws.jsx",
@@ -99,6 +165,36 @@ window.esdocSearchIndex = [
     "src/providers/aws/configloader.jsx~isystemsmanager",
     "typedef/index.html#static-typedef-ISystemsManager",
     "src/Providers/AWS/ConfigLoader.jsx~ISystemsManager",
+    "typedef"
+  ],
+  [
+    "src/providers/common.jsx",
+    "file/src/Providers/Common.jsx.html",
+    "src/Providers/Common.jsx",
+    "file"
+  ],
+  [
+    "src/providers/constants.jsx",
+    "file/src/Providers/Constants.jsx.html",
+    "src/Providers/Constants.jsx",
+    "file"
+  ],
+  [
+    "src/providers/google.jsx",
+    "file/src/Providers/Google.jsx.html",
+    "src/Providers/Google.jsx",
+    "file"
+  ],
+  [
+    "src/providers/utils.jsx",
+    "file/src/Providers/Utils.jsx.html",
+    "src/Providers/Utils.jsx",
+    "file"
+  ],
+  [
+    "src/providers/utils.jsx~handlerresponse",
+    "typedef/index.html#static-typedef-HandlerResponse",
+    "src/Providers/Utils.jsx~HandlerResponse",
     "typedef"
   ],
   [

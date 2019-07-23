@@ -31,9 +31,21 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AWS">AWS</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AWSConfigLoader">AWSConfigLoader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DEP_NAMES">DEP_NAMES</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Google">Google</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-ServiceResponse">ServiceResponse</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers">Providers</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-AWS">AWS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getRequestResponse">getRequestResponse</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Google">Google</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCORSHeaders">getCORSHeaders</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCleanHttpMethod">getCleanHttpMethod</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getCleanPathParts">getCleanPathParts</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getMethodNameIsPrivate">getMethodNameIsPrivate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getResponse">getResponse</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DEP_NAMES">DEP_NAMES</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-METHODS">METHODS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-PATH_DELIMITER">PATH_DELIMITER</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-HandlerResponse">HandlerResponse</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-aws">Providers/AWS</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Providers/AWS/ConfigLoader.jsx~ConfigLoader.html">ConfigLoader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ISystemsManager">ISystemsManager</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">Utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Utils/ServiceResponse.jsx~ServiceResponse.html">ServiceResponse</a></span></span></li>
@@ -41,7 +53,7 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">9/25</span></h1>
+<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">12/29</span></h1>
 
 <table class="files-summary" data-ice="files" data-use-coverage="true">
   <thead>
@@ -57,13 +69,12 @@
   <tbody>
     
   <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/src/Providers/AWS.jsx.html#errorLines=25,27,31,37,44,5,6">src/Providers/AWS.jsx</a></span></td>
-      <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-AWS">AWS</a></span>
-<span><a href="variable/index.html#static-variable-DEP_NAMES">DEP_NAMES</a></span></td>
-      <td class="coverage"><span data-ice="coverage">22 %</span><span data-ice="coverageCount" class="coverage-count">2/9</span></td>
-      <td style="display: none;" data-ice="size">6769 byte</td>
-      <td style="display: none;" data-ice="lines">219</td>
-      <td style="display: none;" data-ice="updated">2019-06-04 18:41:10 (UTC)</td>
+      <td data-ice="filePath"><span><a href="file/src/Providers/AWS.jsx.html">src/Providers/AWS.jsx</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-AWS">AWS</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">1/1</span></td>
+      <td style="display: none;" data-ice="size">1292 byte</td>
+      <td style="display: none;" data-ice="lines">41</td>
+      <td style="display: none;" data-ice="updated">2019-07-06 16:28:46 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/Providers/AWS/ConfigLoader.jsx.html#errorLines=10,27,29">src/Providers/AWS/ConfigLoader.jsx</a></span></td>
@@ -74,6 +85,44 @@
       <td style="display: none;" data-ice="updated">2019-06-03 13:04:37 (UTC)</td>
     </tr>
 <tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/src/Providers/Common.jsx.html">src/Providers/Common.jsx</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-getRequestResponse">getRequestResponse</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">1/1</span></td>
+      <td style="display: none;" data-ice="size">6527 byte</td>
+      <td style="display: none;" data-ice="lines">184</td>
+      <td style="display: none;" data-ice="updated">2019-07-06 16:42:31 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/src/Providers/Constants.jsx.html#errorLines=15,17">src/Providers/Constants.jsx</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="variable/index.html#static-variable-DEP_NAMES">DEP_NAMES</a></span>
+<span><a href="variable/index.html#static-variable-METHODS">METHODS</a></span>
+<span><a href="variable/index.html#static-variable-PATH_DELIMITER">PATH_DELIMITER</a></span></td>
+      <td class="coverage"><span data-ice="coverage">33 %</span><span data-ice="coverageCount" class="coverage-count">1/3</span></td>
+      <td style="display: none;" data-ice="size">419 byte</td>
+      <td style="display: none;" data-ice="lines">25</td>
+      <td style="display: none;" data-ice="updated">2019-07-06 15:28:55 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/src/Providers/Google.jsx.html">src/Providers/Google.jsx</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-Google">Google</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">1/1</span></td>
+      <td style="display: none;" data-ice="size">1676 byte</td>
+      <td style="display: none;" data-ice="lines">56</td>
+      <td style="display: none;" data-ice="updated">2019-07-06 17:14:37 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/src/Providers/Utils.jsx.html#errorLines=11,13,26,33">src/Providers/Utils.jsx</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-getCORSHeaders">getCORSHeaders</a></span>
+<span><a href="function/index.html#static-function-getCleanHttpMethod">getCleanHttpMethod</a></span>
+<span><a href="function/index.html#static-function-getCleanPathParts">getCleanPathParts</a></span>
+<span><a href="function/index.html#static-function-getMethodNameIsPrivate">getMethodNameIsPrivate</a></span>
+<span><a href="function/index.html#static-function-getResponse">getResponse</a></span></td>
+      <td class="coverage"><span data-ice="coverage">20 %</span><span data-ice="coverageCount" class="coverage-count">1/5</span></td>
+      <td style="display: none;" data-ice="size">1317 byte</td>
+      <td style="display: none;" data-ice="lines">33</td>
+      <td style="display: none;" data-ice="updated">2019-07-06 16:42:02 (UTC)</td>
+    </tr>
+<tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/src/Utils/ServiceResponse.jsx.html#errorLines=1,12,17">src/Utils/ServiceResponse.jsx</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/src/Utils/ServiceResponse.jsx~ServiceResponse.html">ServiceResponse</a></span></td>
       <td class="coverage"><span data-ice="coverage">40 %</span><span data-ice="coverageCount" class="coverage-count">2/5</span></td>
@@ -82,14 +131,16 @@
       <td style="display: none;" data-ice="updated">2019-06-03 13:12:07 (UTC)</td>
     </tr>
 <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/src/index.jsx.html#errorLines=5,7,8">src/index.jsx</a></span></td>
+      <td data-ice="filePath"><span><a href="file/src/index.jsx.html#errorLines=11,12,13,7,9">src/index.jsx</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="variable/index.html#static-variable-AWS">AWS</a></span>
 <span><a href="variable/index.html#static-variable-AWSConfigLoader">AWSConfigLoader</a></span>
+<span><a href="variable/index.html#static-variable-DEP_NAMES">DEP_NAMES</a></span>
+<span><a href="variable/index.html#static-variable-Google">Google</a></span>
 <span><a href="variable/index.html#static-variable-ServiceResponse">ServiceResponse</a></span></td>
-      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/3</span></td>
-      <td style="display: none;" data-ice="size">320 byte</td>
-      <td style="display: none;" data-ice="lines">8</td>
-      <td style="display: none;" data-ice="updated">2019-06-03 13:08:25 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/5</span></td>
+      <td style="display: none;" data-ice="size">524 byte</td>
+      <td style="display: none;" data-ice="lines">13</td>
+      <td style="display: none;" data-ice="updated">2019-07-06 19:40:47 (UTC)</td>
     </tr>
 </tbody>
 </table>
