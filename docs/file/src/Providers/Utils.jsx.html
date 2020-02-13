@@ -63,6 +63,7 @@
 
 // SECURITY: Don&apos;t call private methods on services.
 import {PATH_DELIMITER} from &apos;./Constants&apos;;
+import ServiceResponse from &apos;../Utils/ServiceResponse&apos;;
 
 export const getMethodNameIsPrivate = (methodName = &apos;&apos;) =&gt; methodName.charAt(0) === &apos;_&apos;;
 
@@ -73,11 +74,21 @@ export const getCleanPathParts = (path = &apos;&apos;) =&gt; path
 /**
  * @returns {HandlerResponse} The handler response object.
  * */
-export const getResponse = (statusCode = 200, value = undefined, headers = {}) =&gt; ({
-  statusCode,
-  headers: typeof value === &apos;undefined&apos; ? {...headers} : {&apos;Content-Type&apos;: &apos;application/json&apos;, ...headers},
-  body: typeof value === &apos;undefined&apos; ? &apos;&apos; : JSON.stringify(value, null, &apos;  &apos;)
-});
+export const getResponse = (statusCode = 200, value = undefined, headers = {}) =&gt; {
+  const baseHeaders = typeof value === &apos;undefined&apos; ? {...headers} : {&apos;Content-Type&apos;: &apos;application/json&apos;, ...headers};
+  const {
+    headers: valueHeaders = {}
+  } = (value instanceof ServiceResponse ? value : {});
+
+  return {
+    statusCode,
+    headers: {
+      ...baseHeaders,
+      ...valueHeaders
+    },
+    body: typeof value === &apos;undefined&apos; ? &apos;&apos; : JSON.stringify(value, null, &apos;  &apos;)
+  };
+};
 
 export const getCORSHeaders = (clientOrigin = &apos;&apos;) =&gt; ({
   &apos;Access-Control-Allow-Origin&apos;: clientOrigin,

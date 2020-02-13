@@ -9,9 +9,15 @@ export default class ServiceResponse {
    * */
   data;
 
-  constructor(statusCode = 400, data) {
+  /**
+   * @type {Object.<string>}
+   * */
+  headers;
+
+  constructor(statusCode = 400, data, headers = {}) {
     this.statusCode = statusCode;
     this.data = data;
+    this.headers = headers;
   }
 
   toJSON = () => this.data;
