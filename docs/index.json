@@ -657,7 +657,7 @@
     "__docId__": 20,
     "kind": "file",
     "name": "src/Providers/Utils.jsx",
-    "content": "/**\n * @typedef {Object} HandlerResponse\n * @property {number|string} statusCode The response HTTP status code.\n * @property {Object} headers The headers object.\n * @property {string} body A JSON string representing the return value of a function.\n * */\n\n// SECURITY: Don't call private methods on services.\nimport {PATH_DELIMITER} from './Constants';\n\nexport const getMethodNameIsPrivate = (methodName = '') => methodName.charAt(0) === '_';\n\nexport const getCleanPathParts = (path = '') => path\n  .split(PATH_DELIMITER)\n  .filter(p => !!p);\n\n/**\n * @returns {HandlerResponse} The handler response object.\n * */\nexport const getResponse = (statusCode = 200, value = undefined, headers = {}) => ({\n  statusCode,\n  headers: typeof value === 'undefined' ? {...headers} : {'Content-Type': 'application/json', ...headers},\n  body: typeof value === 'undefined' ? '' : JSON.stringify(value, null, '  ')\n});\n\nexport const getCORSHeaders = (clientOrigin = '') => ({\n  'Access-Control-Allow-Origin': clientOrigin,\n  'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',\n  'Access-Control-Allow-Methods': 'OPTIONS, HEAD, GET, POST, PUT, PATCH, DELETE',\n  'Access-Control-Allow-Credentials': 'true'\n});\n\nexport const getCleanHttpMethod = (method = 'POST') => `${method}`.toUpperCase();\n",
+    "content": "/**\n * @typedef {Object} HandlerResponse\n * @property {number|string} statusCode The response HTTP status code.\n * @property {Object} headers The headers object.\n * @property {string} body A JSON string representing the return value of a function.\n * */\n\n// SECURITY: Don't call private methods on services.\nimport {PATH_DELIMITER} from './Constants';\nimport ServiceResponse from '../Utils/ServiceResponse';\n\nexport const getMethodNameIsPrivate = (methodName = '') => methodName.charAt(0) === '_';\n\nexport const getCleanPathParts = (path = '') => path\n  .split(PATH_DELIMITER)\n  .filter(p => !!p);\n\n/**\n * @returns {HandlerResponse} The handler response object.\n * */\nexport const getResponse = (statusCode = 200, value = undefined, headers = {}) => {\n  const baseHeaders = typeof value === 'undefined' ? {...headers} : {'Content-Type': 'application/json', ...headers};\n  const {\n    headers: valueHeaders = {}\n  } = (value instanceof ServiceResponse ? value : {});\n\n  return {\n    statusCode,\n    headers: {\n      ...baseHeaders,\n      ...valueHeaders\n    },\n    body: typeof value === 'undefined' ? '' : JSON.stringify(value, null, '  ')\n  };\n};\n\nexport const getCORSHeaders = (clientOrigin = '') => ({\n  'Access-Control-Allow-Origin': clientOrigin,\n  'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',\n  'Access-Control-Allow-Methods': 'OPTIONS, HEAD, GET, POST, PUT, PATCH, DELETE',\n  'Access-Control-Allow-Credentials': 'true'\n});\n\nexport const getCleanHttpMethod = (method = 'POST') => `${method}`.toUpperCase();\n",
     "static": true,
     "longname": "/Users/ryangraff/projects/incarnate-cloud/src/Providers/Utils.jsx",
     "access": "public",
@@ -729,7 +729,7 @@
     "importPath": "incarnate-cloud/src/Providers/Utils.jsx",
     "importStyle": "{getMethodNameIsPrivate}",
     "description": null,
-    "lineNumber": 11,
+    "lineNumber": 12,
     "undocument": true,
     "params": [
       {
@@ -758,7 +758,7 @@
     "importPath": "incarnate-cloud/src/Providers/Utils.jsx",
     "importStyle": "{getCleanPathParts}",
     "description": null,
-    "lineNumber": 13,
+    "lineNumber": 14,
     "undocument": true,
     "params": [
       {
@@ -787,7 +787,7 @@
     "importPath": "incarnate-cloud/src/Providers/Utils.jsx",
     "importStyle": "{getResponse}",
     "description": "",
-    "lineNumber": 20,
+    "lineNumber": 21,
     "unknown": [
       {
         "tagName": "@returns",
@@ -846,7 +846,7 @@
     "importPath": "incarnate-cloud/src/Providers/Utils.jsx",
     "importStyle": "{getCORSHeaders}",
     "description": null,
-    "lineNumber": 26,
+    "lineNumber": 37,
     "undocument": true,
     "params": [
       {
@@ -875,7 +875,7 @@
     "importPath": "incarnate-cloud/src/Providers/Utils.jsx",
     "importStyle": "{getCleanHttpMethod}",
     "description": null,
-    "lineNumber": 33,
+    "lineNumber": 44,
     "undocument": true,
     "params": [
       {
@@ -894,7 +894,7 @@
     "__docId__": 27,
     "kind": "file",
     "name": "src/Utils/ServiceResponse.jsx",
-    "content": "export default class ServiceResponse {\n  /**\n   * @type {number}\n   * */\n  statusCode = 400;\n\n  /**\n   * @type {*}\n   * */\n  data;\n\n  constructor(statusCode = 400, data) {\n    this.statusCode = statusCode;\n    this.data = data;\n  }\n\n  toJSON = () => this.data;\n}\n",
+    "content": "export default class ServiceResponse {\n  /**\n   * @type {number}\n   * */\n  statusCode = 400;\n\n  /**\n   * @type {*}\n   * */\n  data;\n\n  /**\n   * @type {Object.<string>}\n   * */\n  headers;\n\n  constructor(statusCode = 400, data, headers = {}) {\n    this.statusCode = statusCode;\n    this.data = data;\n    this.headers = headers;\n  }\n\n  toJSON = () => this.data;\n}\n",
     "static": true,
     "longname": "/Users/ryangraff/projects/incarnate-cloud/src/Utils/ServiceResponse.jsx",
     "access": "public",
@@ -957,6 +957,25 @@
   },
   {
     "__docId__": 31,
+    "kind": "member",
+    "name": "headers",
+    "memberof": "src/Utils/ServiceResponse.jsx~ServiceResponse",
+    "static": false,
+    "longname": "src/Utils/ServiceResponse.jsx~ServiceResponse#headers",
+    "access": "public",
+    "description": "",
+    "lineNumber": 15,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Object.<string>"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 32,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Utils/ServiceResponse.jsx~ServiceResponse",
@@ -966,11 +985,11 @@
     "longname": "src/Utils/ServiceResponse.jsx~ServiceResponse#constructor",
     "access": "public",
     "description": null,
-    "lineNumber": 12,
+    "lineNumber": 17,
     "undocument": true
   },
   {
-    "__docId__": 34,
+    "__docId__": 36,
     "kind": "member",
     "name": "toJSON",
     "memberof": "src/Utils/ServiceResponse.jsx~ServiceResponse",
@@ -978,7 +997,7 @@
     "longname": "src/Utils/ServiceResponse.jsx~ServiceResponse#toJSON",
     "access": "public",
     "description": null,
-    "lineNumber": 17,
+    "lineNumber": 23,
     "undocument": true,
     "type": {
       "types": [
@@ -987,7 +1006,7 @@
     }
   },
   {
-    "__docId__": 35,
+    "__docId__": 37,
     "kind": "file",
     "name": "src/index.jsx",
     "content": "import AWSConfigLoaderInternal from './Providers/AWS/ConfigLoader';\nimport AWSInternal from './Providers/AWS';\nimport GoogleInternal from './Providers/Google';\nimport ServiceResponseInternal from './Utils/ServiceResponse';\nimport {DEP_NAMES as DEP_NAMES_INTERNAL} from './Providers/Constants';\n\nexport const DEP_NAMES = DEP_NAMES_INTERNAL;\n\nexport const ServiceResponse = ServiceResponseInternal;\n\nexport const AWSConfigLoader = AWSConfigLoaderInternal;\nexport const AWS = AWSInternal;\nexport const Google = GoogleInternal;\n",
@@ -998,7 +1017,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 36,
+    "__docId__": 38,
     "kind": "variable",
     "name": "DEP_NAMES",
     "memberof": "src/index.jsx",
@@ -1018,7 +1037,7 @@
     }
   },
   {
-    "__docId__": 37,
+    "__docId__": 39,
     "kind": "variable",
     "name": "ServiceResponse",
     "memberof": "src/index.jsx",
@@ -1038,7 +1057,7 @@
     }
   },
   {
-    "__docId__": 38,
+    "__docId__": 40,
     "kind": "variable",
     "name": "AWSConfigLoader",
     "memberof": "src/index.jsx",
@@ -1058,7 +1077,7 @@
     }
   },
   {
-    "__docId__": 39,
+    "__docId__": 41,
     "kind": "variable",
     "name": "AWS",
     "memberof": "src/index.jsx",
@@ -1078,7 +1097,7 @@
     }
   },
   {
-    "__docId__": 40,
+    "__docId__": 42,
     "kind": "variable",
     "name": "Google",
     "memberof": "src/index.jsx",

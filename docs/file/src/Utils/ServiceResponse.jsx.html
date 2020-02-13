@@ -65,9 +65,15 @@
    * */
   data;
 
-  constructor(statusCode = 400, data) {
+  /**
+   * @type {Object.&lt;string&gt;}
+   * */
+  headers;
+
+  constructor(statusCode = 400, data, headers = {}) {
     this.statusCode = statusCode;
     this.data = data;
+    this.headers = headers;
   }
 
   toJSON = () =&gt; this.data;
