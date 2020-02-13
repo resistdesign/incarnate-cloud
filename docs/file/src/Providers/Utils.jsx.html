@@ -65,6 +65,9 @@
 import {PATH_DELIMITER} from &apos;./Constants&apos;;
 import ServiceResponse from &apos;../Utils/ServiceResponse&apos;;
 
+const CLEAN_CONTENT_TYPE_HEADER_NAME = &apos;content-type&apos;;
+const JSON_CONTENT_TYPE = &apos;application/json&apos;;
+
 export const getMethodNameIsPrivate = (methodName = &apos;&apos;) =&gt; methodName.charAt(0) === &apos;_&apos;;
 
 export const getCleanPathParts = (path = &apos;&apos;) =&gt; path
@@ -79,14 +82,39 @@ export const getResponse = (statusCode = 200, value = undefined, headers = {}) =
   const {
     headers: valueHeaders = {}
   } = (value instanceof ServiceResponse ? value : {});
+  const mergedHeaders = {
+    ...baseHeaders,
+    ...valueHeaders
+  };
+  const contentType = Object
+    .keys(mergedHeaders)
+    .reduce((acc, k) =&gt; {
+      if (typeof acc !== &apos;undefined&apos;) {
+        return acc;
+      } else {
+        const cleanKey = `${k}`.toLowerCase();
+
+        if (cleanKey === CLEAN_CONTENT_TYPE_HEADER_NAME) {
+          return mergedHeaders[k];
+        } else {
+          return undefined;
+        }
+      }
+    }, undefined);
+  const contentIsJSON = typeof contentType === &apos;string&apos; &amp;&amp; contentType.indexOf(JSON_CONTENT_TYPE) !== -1;
 
   return {
     statusCode,
-    headers: {
-      ...baseHeaders,
-      ...valueHeaders
-    },
-    body: typeof value === &apos;undefined&apos; ? &apos;&apos; : JSON.stringify(value, null, &apos;  &apos;)
+    headers: mergedHeaders,
+    body: typeof value === &apos;undefined&apos; ?
+      &apos;&apos; :
+      (
+        !!contentIsJSON ?
+          // Content is JSON.
+          JSON.stringify(value, null, &apos;  &apos;) :
+          // Content is NOT JSON.
+          value
+      )
   };
 };
 
