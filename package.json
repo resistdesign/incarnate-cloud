@@ -1,6 +1,6 @@
 {
   "name": "incarnate-cloud",
-  "version": "4.0.1",
+  "version": "4.1.0",
   "description": "Cloud Function Middleware for Incarnate",
   "main": "src/index.jsx",
   "files": [
