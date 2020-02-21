@@ -14,10 +14,16 @@ export default class ServiceResponse {
    * */
   headers;
 
-  constructor(statusCode = 400, data, headers = {}) {
+  /**
+   * @type {Object}
+   * */
+  other;
+
+  constructor(statusCode = 400, data, headers = {}, other = {}) {
     this.statusCode = statusCode;
     this.data = data;
     this.headers = headers;
+    this.other = other;
   }
 
   toJSON = () => this.data;

@@ -24,7 +24,8 @@ export const getCleanPathParts = (path = '') => path
 export const getResponse = (statusCode = 200, value = undefined, headers = {}) => {
   const baseHeaders = typeof value === 'undefined' ? {...headers} : {'Content-Type': 'application/json', ...headers};
   const {
-    headers: valueHeaders = {}
+    headers: valueHeaders = {},
+    other: valueOtherProperties = {}
   } = (value instanceof ServiceResponse ? value : {});
   const mergedHeaders = {
     ...baseHeaders,
@@ -58,7 +59,8 @@ export const getResponse = (statusCode = 200, value = undefined, headers = {}) =
           JSON.stringify(value, null, '  ') :
           // Content is NOT JSON.
           value
-      )
+      ),
+    ...valueOtherProperties
   };
 };
 
