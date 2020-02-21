@@ -80,7 +80,8 @@ export const getCleanPathParts = (path = &apos;&apos;) =&gt; path
 export const getResponse = (statusCode = 200, value = undefined, headers = {}) =&gt; {
   const baseHeaders = typeof value === &apos;undefined&apos; ? {...headers} : {&apos;Content-Type&apos;: &apos;application/json&apos;, ...headers};
   const {
-    headers: valueHeaders = {}
+    headers: valueHeaders = {},
+    other: valueOtherProperties = {}
   } = (value instanceof ServiceResponse ? value : {});
   const mergedHeaders = {
     ...baseHeaders,
@@ -114,7 +115,8 @@ export const getResponse = (statusCode = 200, value = undefined, headers = {}) =
           JSON.stringify(value, null, &apos;  &apos;) :
           // Content is NOT JSON.
           value
-      )
+      ),
+    ...valueOtherProperties
   };
 };
 

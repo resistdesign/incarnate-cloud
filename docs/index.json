@@ -657,7 +657,7 @@
     "__docId__": 20,
     "kind": "file",
     "name": "src/Providers/Utils.jsx",
-    "content": "/**\n * @typedef {Object} HandlerResponse\n * @property {number|string} statusCode The response HTTP status code.\n * @property {Object} headers The headers object.\n * @property {string} body A JSON string representing the return value of a function.\n * */\n\n// SECURITY: Don't call private methods on services.\nimport {PATH_DELIMITER} from './Constants';\nimport ServiceResponse from '../Utils/ServiceResponse';\n\nconst CLEAN_CONTENT_TYPE_HEADER_NAME = 'content-type';\nconst JSON_CONTENT_TYPE = 'application/json';\n\nexport const getMethodNameIsPrivate = (methodName = '') => methodName.charAt(0) === '_';\n\nexport const getCleanPathParts = (path = '') => path\n  .split(PATH_DELIMITER)\n  .filter(p => !!p);\n\n/**\n * @returns {HandlerResponse} The handler response object.\n * */\nexport const getResponse = (statusCode = 200, value = undefined, headers = {}) => {\n  const baseHeaders = typeof value === 'undefined' ? {...headers} : {'Content-Type': 'application/json', ...headers};\n  const {\n    headers: valueHeaders = {}\n  } = (value instanceof ServiceResponse ? value : {});\n  const mergedHeaders = {\n    ...baseHeaders,\n    ...valueHeaders\n  };\n  const contentType = Object\n    .keys(mergedHeaders)\n    .reduce((acc, k) => {\n      if (typeof acc !== 'undefined') {\n        return acc;\n      } else {\n        const cleanKey = `${k}`.toLowerCase();\n\n        if (cleanKey === CLEAN_CONTENT_TYPE_HEADER_NAME) {\n          return mergedHeaders[k];\n        } else {\n          return undefined;\n        }\n      }\n    }, undefined);\n  const contentIsJSON = typeof contentType === 'string' && contentType.indexOf(JSON_CONTENT_TYPE) !== -1;\n\n  return {\n    statusCode,\n    headers: mergedHeaders,\n    body: typeof value === 'undefined' ?\n      '' :\n      (\n        !!contentIsJSON ?\n          // Content is JSON.\n          JSON.stringify(value, null, '  ') :\n          // Content is NOT JSON.\n          value\n      )\n  };\n};\n\nexport const getCORSHeaders = (clientOrigin = '') => ({\n  'Access-Control-Allow-Origin': clientOrigin,\n  'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',\n  'Access-Control-Allow-Methods': 'OPTIONS, HEAD, GET, POST, PUT, PATCH, DELETE',\n  'Access-Control-Allow-Credentials': 'true'\n});\n\nexport const getCleanHttpMethod = (method = 'POST') => `${method}`.toUpperCase();\n",
+    "content": "/**\n * @typedef {Object} HandlerResponse\n * @property {number|string} statusCode The response HTTP status code.\n * @property {Object} headers The headers object.\n * @property {string} body A JSON string representing the return value of a function.\n * */\n\n// SECURITY: Don't call private methods on services.\nimport {PATH_DELIMITER} from './Constants';\nimport ServiceResponse from '../Utils/ServiceResponse';\n\nconst CLEAN_CONTENT_TYPE_HEADER_NAME = 'content-type';\nconst JSON_CONTENT_TYPE = 'application/json';\n\nexport const getMethodNameIsPrivate = (methodName = '') => methodName.charAt(0) === '_';\n\nexport const getCleanPathParts = (path = '') => path\n  .split(PATH_DELIMITER)\n  .filter(p => !!p);\n\n/**\n * @returns {HandlerResponse} The handler response object.\n * */\nexport const getResponse = (statusCode = 200, value = undefined, headers = {}) => {\n  const baseHeaders = typeof value === 'undefined' ? {...headers} : {'Content-Type': 'application/json', ...headers};\n  const {\n    headers: valueHeaders = {},\n    other: valueOtherProperties = {}\n  } = (value instanceof ServiceResponse ? value : {});\n  const mergedHeaders = {\n    ...baseHeaders,\n    ...valueHeaders\n  };\n  const contentType = Object\n    .keys(mergedHeaders)\n    .reduce((acc, k) => {\n      if (typeof acc !== 'undefined') {\n        return acc;\n      } else {\n        const cleanKey = `${k}`.toLowerCase();\n\n        if (cleanKey === CLEAN_CONTENT_TYPE_HEADER_NAME) {\n          return mergedHeaders[k];\n        } else {\n          return undefined;\n        }\n      }\n    }, undefined);\n  const contentIsJSON = typeof contentType === 'string' && contentType.indexOf(JSON_CONTENT_TYPE) !== -1;\n\n  return {\n    statusCode,\n    headers: mergedHeaders,\n    body: typeof value === 'undefined' ?\n      '' :\n      (\n        !!contentIsJSON ?\n          // Content is JSON.\n          JSON.stringify(value, null, '  ') :\n          // Content is NOT JSON.\n          value\n      ),\n    ...valueOtherProperties\n  };\n};\n\nexport const getCORSHeaders = (clientOrigin = '') => ({\n  'Access-Control-Allow-Origin': clientOrigin,\n  'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',\n  'Access-Control-Allow-Methods': 'OPTIONS, HEAD, GET, POST, PUT, PATCH, DELETE',\n  'Access-Control-Allow-Credentials': 'true'\n});\n\nexport const getCleanHttpMethod = (method = 'POST') => `${method}`.toUpperCase();\n",
     "static": true,
     "longname": "/Users/ryangraff/projects/incarnate-cloud/src/Providers/Utils.jsx",
     "access": "public",
@@ -888,7 +888,7 @@
     "importPath": "incarnate-cloud/src/Providers/Utils.jsx",
     "importStyle": "{getCORSHeaders}",
     "description": null,
-    "lineNumber": 65,
+    "lineNumber": 67,
     "undocument": true,
     "params": [
       {
@@ -917,7 +917,7 @@
     "importPath": "incarnate-cloud/src/Providers/Utils.jsx",
     "importStyle": "{getCleanHttpMethod}",
     "description": null,
-    "lineNumber": 72,
+    "lineNumber": 74,
     "undocument": true,
     "params": [
       {
@@ -936,7 +936,7 @@
     "__docId__": 29,
     "kind": "file",
     "name": "src/Utils/ServiceResponse.jsx",
-    "content": "export default class ServiceResponse {\n  /**\n   * @type {number}\n   * */\n  statusCode = 400;\n\n  /**\n   * @type {*}\n   * */\n  data;\n\n  /**\n   * @type {Object.<string>}\n   * */\n  headers;\n\n  constructor(statusCode = 400, data, headers = {}) {\n    this.statusCode = statusCode;\n    this.data = data;\n    this.headers = headers;\n  }\n\n  toJSON = () => this.data;\n}\n",
+    "content": "export default class ServiceResponse {\n  /**\n   * @type {number}\n   * */\n  statusCode = 400;\n\n  /**\n   * @type {*}\n   * */\n  data;\n\n  /**\n   * @type {Object.<string>}\n   * */\n  headers;\n\n  /**\n   * @type {Object}\n   * */\n  other;\n\n  constructor(statusCode = 400, data, headers = {}, other = {}) {\n    this.statusCode = statusCode;\n    this.data = data;\n    this.headers = headers;\n    this.other = other;\n  }\n\n  toJSON = () => this.data;\n}\n",
     "static": true,
     "longname": "/Users/ryangraff/projects/incarnate-cloud/src/Utils/ServiceResponse.jsx",
     "access": "public",
@@ -1018,6 +1018,25 @@
   },
   {
     "__docId__": 34,
+    "kind": "member",
+    "name": "other",
+    "memberof": "src/Utils/ServiceResponse.jsx~ServiceResponse",
+    "static": false,
+    "longname": "src/Utils/ServiceResponse.jsx~ServiceResponse#other",
+    "access": "public",
+    "description": "",
+    "lineNumber": 20,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 35,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Utils/ServiceResponse.jsx~ServiceResponse",
@@ -1027,11 +1046,11 @@
     "longname": "src/Utils/ServiceResponse.jsx~ServiceResponse#constructor",
     "access": "public",
     "description": null,
-    "lineNumber": 17,
+    "lineNumber": 22,
     "undocument": true
   },
   {
-    "__docId__": 38,
+    "__docId__": 40,
     "kind": "member",
     "name": "toJSON",
     "memberof": "src/Utils/ServiceResponse.jsx~ServiceResponse",
@@ -1039,7 +1058,7 @@
     "longname": "src/Utils/ServiceResponse.jsx~ServiceResponse#toJSON",
     "access": "public",
     "description": null,
-    "lineNumber": 23,
+    "lineNumber": 29,
     "undocument": true,
     "type": {
       "types": [
@@ -1048,7 +1067,7 @@
     }
   },
   {
-    "__docId__": 39,
+    "__docId__": 41,
     "kind": "file",
     "name": "src/index.jsx",
     "content": "import AWSConfigLoaderInternal from './Providers/AWS/ConfigLoader';\nimport AWSInternal from './Providers/AWS';\nimport GoogleInternal from './Providers/Google';\nimport ServiceResponseInternal from './Utils/ServiceResponse';\nimport {DEP_NAMES as DEP_NAMES_INTERNAL} from './Providers/Constants';\n\nexport const DEP_NAMES = DEP_NAMES_INTERNAL;\n\nexport const ServiceResponse = ServiceResponseInternal;\n\nexport const AWSConfigLoader = AWSConfigLoaderInternal;\nexport const AWS = AWSInternal;\nexport const Google = GoogleInternal;\n",
@@ -1059,7 +1078,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 40,
+    "__docId__": 42,
     "kind": "variable",
     "name": "DEP_NAMES",
     "memberof": "src/index.jsx",
@@ -1079,7 +1098,7 @@
     }
   },
   {
-    "__docId__": 41,
+    "__docId__": 43,
     "kind": "variable",
     "name": "ServiceResponse",
     "memberof": "src/index.jsx",
@@ -1099,7 +1118,7 @@
     }
   },
   {
-    "__docId__": 42,
+    "__docId__": 44,
     "kind": "variable",
     "name": "AWSConfigLoader",
     "memberof": "src/index.jsx",
@@ -1119,7 +1138,7 @@
     }
   },
   {
-    "__docId__": 43,
+    "__docId__": 45,
     "kind": "variable",
     "name": "AWS",
     "memberof": "src/index.jsx",
@@ -1139,7 +1158,7 @@
     }
   },
   {
-    "__docId__": 44,
+    "__docId__": 46,
     "kind": "variable",
     "name": "Google",
     "memberof": "src/index.jsx",

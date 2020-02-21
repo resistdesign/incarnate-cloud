@@ -222,6 +222,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/utils/serviceresponse.jsx~serviceresponse#other",
+    "class/src/Utils/ServiceResponse.jsx~ServiceResponse.html#instance-member-other",
+    "src/Utils/ServiceResponse.jsx~ServiceResponse#other",
+    "member"
+  ],
+  [
     "src/utils/serviceresponse.jsx~serviceresponse#statuscode",
     "class/src/Utils/ServiceResponse.jsx~ServiceResponse.html#instance-member-statusCode",
     "src/Utils/ServiceResponse.jsx~ServiceResponse#statusCode",
