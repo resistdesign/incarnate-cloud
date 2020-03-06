@@ -27,7 +27,11 @@ class MockResponse {
   send = (body) => this.response.body = body;
 }
 
-const createTestWithAllowedOrigin = (allowedOrigin = '') => async () => {
+const createTestWithAllowedOrigin = (
+  allowedOrigin = '',
+  eventData = MockAPIGatewayEvent,
+  expectOrigin = 'http://example.com'
+) => async () => {
   const cloudFunction = AWS({
     incarnateConfig: {
       subMap: {
@@ -49,7 +53,7 @@ const createTestWithAllowedOrigin = (allowedOrigin = '') => async () => {
     ],
     allowedOrigin
   });
-  const resp = await cloudFunction(MockAPIGatewayEvent);
+  const resp = await cloudFunction(eventData);
   const {
     headers: {
       ['Access-Control-Allow-Origin']: allowedCorsOrigin = ''
@@ -58,7 +62,7 @@ const createTestWithAllowedOrigin = (allowedOrigin = '') => async () => {
   } = resp;
 
   expect(responseBody).to.be.a('string');
-  expect(allowedCorsOrigin).to.be('http://example.com');
+  expect(allowedCorsOrigin).to.be(expectOrigin);
 };
 
 module.exports = {
@@ -260,6 +264,20 @@ module.exports = {
       Promise.all([
         createTestWithAllowedOrigin(['http://example.com'])(),
         createTestWithAllowedOrigin([/^.*?example\.com$/gmi])(),
+        createTestWithAllowedOrigin(
+          [
+            'http://example.com',
+            /^.*?example\.com($|:[0-9]*$)/gmi
+          ],
+          {
+            ...MockAPIGatewayEvent,
+            headers: {
+              ...MockAPIGatewayEvent.headers,
+              Origin: 'http://example.com:5000'
+            }
+          },
+          'http://example.com:5000'
+        )(),
         createTestWithAllowedOrigin([() => true])()
       ])
   },
