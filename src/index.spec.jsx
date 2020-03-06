@@ -27,6 +27,40 @@ class MockResponse {
   send = (body) => this.response.body = body;
 }
 
+const createTestWithAllowedOrigin = (allowedOrigin = '') => async () => {
+  const cloudFunction = AWS({
+    incarnateConfig: {
+      subMap: {
+        package: {
+          subMap: {
+            service: {
+              factory: () => {
+                return {
+                  methodName: a1 => a1
+                };
+              }
+            }
+          }
+        }
+      }
+    },
+    allowedPaths: [
+      '/package/service/method-name'
+    ],
+    allowedOrigin
+  });
+  const resp = await cloudFunction(MockAPIGatewayEvent);
+  const {
+    headers: {
+      ['Access-Control-Allow-Origin']: allowedCorsOrigin = ''
+    } = {},
+    body: responseBody
+  } = resp;
+
+  expect(responseBody).to.be.a('string');
+  expect(allowedCorsOrigin).to.be('http://example.com');
+};
+
 module.exports = {
   AWS: {
     'should return a response': async () => {
@@ -215,7 +249,19 @@ module.exports = {
 
       expect(identity).to.be.an(Object);
       expect(identity.test).to.be('TEST_IDENTITY');
-    }
+    },
+    'should process allowed origins by string, regex or function': async () =>
+      Promise.all([
+        createTestWithAllowedOrigin('http://example.com')(),
+        createTestWithAllowedOrigin(/^.*?example\.com$/gmi)(),
+        createTestWithAllowedOrigin(() => true)()
+      ]),
+    'should process allowed origins as an array of either string, regex or function': async () =>
+      Promise.all([
+        createTestWithAllowedOrigin(['http://example.com'])(),
+        createTestWithAllowedOrigin([/^.*?example\.com$/gmi])(),
+        createTestWithAllowedOrigin([() => true])()
+      ])
   },
   Google: {
     'should return a response': async () => {

@@ -45,6 +45,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DEP_NAMES">DEP_NAMES</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-METHODS">METHODS</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-PATH_DELIMITER">PATH_DELIMITER</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-AllowedOriginProcessor">AllowedOriginProcessor</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-HandlerResponse">HandlerResponse</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-aws">Providers/AWS</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Providers/AWS/ConfigLoader.jsx~ConfigLoader.html">ConfigLoader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ISystemsManager">ISystemsManager</a></span></span></li>
@@ -130,7 +131,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-getCORSHeaders">getCORSHeaders</a></span></span><span class="code" data-ice="signature">(clientOrigin: <span>string</span>)</span>
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-getCORSHeaders">getCORSHeaders</a></span></span><span class="code" data-ice="signature">(clientOrigin: <span>string</span>, currentOrigin: <span>string</span>): {&quot;Access-Control-Allow-Origin&quot;: <span>*</span>, &quot;Access-Control-Allow-Headers&quot;: <span>string</span>, &quot;Access-Control-Allow-Methods&quot;: <span>string</span>, &quot;Access-Control-Allow-Credentials&quot;: <span>string</span>}</span>
         </p>
       </div>
       <div>
@@ -344,7 +345,7 @@
     </tr>
 <tr data-ice="property" data-depth="1">
       <td data-ice="name" class="code" data-depth="1">config.allowedOrigin</td>
-      <td data-ice="type" class="code"><span>string</span></td>
+      <td data-ice="type" class="code"><span>string</span> | <span><span>string</span><span>[]</span></span> | <span>RegExp</span> | <span><span>RegExp</span><span>[]</span></span> | <span><a href="typedef/index.html#static-typedef-AllowedOriginProcessor">AllowedOriginProcessor</a></span> | <span><span><a href="typedef/index.html#static-typedef-AllowedOriginProcessor">AllowedOriginProcessor</a></span><span>[]</span></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"><p>The allowed CORS origin returned to <code>OPTIONS</code> requests.</p>
 </td>
@@ -445,7 +446,7 @@
     </tr>
 <tr data-ice="property" data-depth="1">
       <td data-ice="name" class="code" data-depth="1">config.allowedOrigin</td>
-      <td data-ice="type" class="code"><span>string</span></td>
+      <td data-ice="type" class="code"><span>string</span> | <span><span>string</span><span>[]</span></span> | <span>RegExp</span> | <span><span>RegExp</span><span>[]</span></span> | <span><a href="typedef/index.html#static-typedef-AllowedOriginProcessor">AllowedOriginProcessor</a></span> | <span><span><a href="typedef/index.html#static-typedef-AllowedOriginProcessor">AllowedOriginProcessor</a></span><span>[]</span></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"><p>The allowed CORS origin returned to <code>OPTIONS</code> requests.</p>
 </td>
@@ -500,7 +501,7 @@
     
     
     
-    <span class="code" data-ice="name">getCORSHeaders</span><span class="code" data-ice="signature">(clientOrigin: <span>string</span>)</span>
+    <span class="code" data-ice="name">getCORSHeaders</span><span class="code" data-ice="signature">(clientOrigin: <span>string</span>, currentOrigin: <span>string</span>): {&quot;Access-Control-Allow-Origin&quot;: <span>*</span>, &quot;Access-Control-Allow-Headers&quot;: <span>string</span>, &quot;Access-Control-Allow-Methods&quot;: <span>string</span>, &quot;Access-Control-Allow-Credentials&quot;: <span>string</span>}</span>
     <span class="right-info">
       
       
@@ -530,12 +531,31 @@
 <li>default: </li></ul></td>
       <td data-ice="description"></td>
     </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">currentOrigin</td>
+      <td data-ice="type" class="code"><span>string</span></td>
+      <td data-ice="appendix"><ul><li>optional</li>
+<li>default: </li></ul></td>
+      <td data-ice="description"></td>
+    </tr>
 </tbody>
   </table>
 </div>
 </div>
 
-  
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType">{&quot;Access-Control-Allow-Origin&quot;: <span>*</span>, &quot;Access-Control-Allow-Headers&quot;: <span>string</span>, &quot;Access-Control-Allow-Methods&quot;: <span>string</span>, &quot;Access-Control-Allow-Credentials&quot;: <span>string</span>}</td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
 
   
 
@@ -564,11 +584,11 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Providers/Utils.jsx.html#lineNumber74">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Providers/Utils.jsx.html#lineNumber90">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {getCleanHttpMethod} from &apos;<span><a href="file/src/Providers/Utils.jsx.html#lineNumber74">incarnate-cloud/src/Providers/Utils.jsx</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {getCleanHttpMethod} from &apos;<span><a href="file/src/Providers/Utils.jsx.html#lineNumber90">incarnate-cloud/src/Providers/Utils.jsx</a></span>&apos;</code></pre></div>
   
   
   
@@ -744,11 +764,11 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Providers/Common.jsx.html#lineNumber24">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Providers/Common.jsx.html#lineNumber30">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {getRequestResponse} from &apos;<span><a href="file/src/Providers/Common.jsx.html#lineNumber24">incarnate-cloud/src/Providers/Common.jsx</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {getRequestResponse} from &apos;<span><a href="file/src/Providers/Common.jsx.html#lineNumber30">incarnate-cloud/src/Providers/Common.jsx</a></span>&apos;</code></pre></div>
   
   
   <div data-ice="description"><p>The generic request handler.</p>
@@ -787,7 +807,7 @@
     </tr>
 <tr data-ice="property" data-depth="1">
       <td data-ice="name" class="code" data-depth="1">config.allowedOrigin</td>
-      <td data-ice="type" class="code"><span>string</span></td>
+      <td data-ice="type" class="code"><span>string</span> | <span><span>string</span><span>[]</span></span> | <span>RegExp</span> | <span><span>RegExp</span><span>[]</span></span> | <span><a href="typedef/index.html#static-typedef-AllowedOriginProcessor">AllowedOriginProcessor</a></span> | <span><span><a href="typedef/index.html#static-typedef-AllowedOriginProcessor">AllowedOriginProcessor</a></span><span>[]</span></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"><p>The allowed CORS origin returned to <code>OPTIONS</code> requests.</p>
 </td>
