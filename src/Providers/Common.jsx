@@ -6,11 +6,17 @@ import ServiceResponse from '../Utils/ServiceResponse';
 import toCamelCase from 'lodash.camelcase';
 
 /**
+ * @typedef {Function} AllowedOriginProcessor
+ * @param {string} incomingOrigin The current origin of the incoming request.
+ * @returns {boolean} Whether or not the `incomingOrigin` is allowed.
+ * */
+
+/**
  * The generic request handler.
  * @param {Object} config The configuration object.
  * @param {Object} config.incarnateConfig The incarnate configuration object.
  * @param {Array.<string>} config.allowedPaths A SECURITY measure to prevent access of values and methods outside of services.
- * @param {string} config.allowedOrigin The allowed CORS origin returned to `OPTIONS` requests.
+ * @param {string|string[]|RegExp|RegExp[]|AllowedOriginProcessor|AllowedOriginProcessor[]} config.allowedOrigin The allowed CORS origin returned to `OPTIONS` requests.
  * @param {number} config.dependencyResolutionTimeoutMS The maximum number of milliseconds allotted for resolving service dependencies. Default: 300000 (5 minutes)
  * @param {Object} config.event The raw invocation event object.
  * @param {string} config.httpMethod The HTTP method for the request. Default: POST
@@ -33,7 +39,15 @@ export const getRequestResponse = async ({
                                            path = '',
                                            bodyString = '[]'
                                          } = {}) => {
-  const corsHeaders = getCORSHeaders(allowedOrigin);
+  const incomingHeaders = {
+    ...headers,
+    ...multiValueHeaders
+  };
+  const {
+    Origin: incomingOrigin = ''
+  } = incomingHeaders;
+  const currentOrigin = incomingOrigin instanceof Array ? incomingOrigin[0] : incomingOrigin;
+  const corsHeaders = getCORSHeaders(allowedOrigin, currentOrigin);
   const getResponseWithCORS = (statusCode = 200, value = undefined, headers = {}) => {
     return getResponse(
       statusCode,
@@ -68,10 +82,7 @@ export const getRequestResponse = async ({
       [DEP_NAMES.INPUT]: {
         subMap: {
           [DEP_NAMES.HEADERS]: {
-            factory: () => ({
-              ...headers,
-              ...multiValueHeaders
-            })
+            factory: () => incomingHeaders
           },
           [DEP_NAMES.COOKIES]: {
             dependencies: {

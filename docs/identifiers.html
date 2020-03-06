@@ -45,6 +45,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DEP_NAMES">DEP_NAMES</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-METHODS">METHODS</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-PATH_DELIMITER">PATH_DELIMITER</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-AllowedOriginProcessor">AllowedOriginProcessor</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-HandlerResponse">HandlerResponse</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-aws">Providers/AWS</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Providers/AWS/ConfigLoader.jsx~ConfigLoader.html">ConfigLoader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ISystemsManager">ISystemsManager</a></span></span></li>
@@ -315,7 +316,7 @@
           <span data-ice="kind-icon" class="kind-function">F</span>
           
           
-          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-getCORSHeaders">getCORSHeaders</a></span></span><span class="code" data-ice="signature">(clientOrigin: <span>string</span>)</span>
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-getCORSHeaders">getCORSHeaders</a></span></span><span class="code" data-ice="signature">(clientOrigin: <span>string</span>, currentOrigin: <span>string</span>): {&quot;Access-Control-Allow-Origin&quot;: <span>*</span>, &quot;Access-Control-Allow-Headers&quot;: <span>string</span>, &quot;Access-Control-Allow-Methods&quot;: <span>string</span>, &quot;Access-Control-Allow-Credentials&quot;: <span>string</span>}</span>
         </p>
       </div>
       <div>
@@ -513,6 +514,34 @@
           
           
           <span class="code" data-ice="name"><span><a href="variable/index.html#static-variable-PATH_DELIMITER">PATH_DELIMITER</a></span></span><span class="code" data-ice="signature">: <span>string</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          <span data-ice="kind-icon" class="kind-typedef">T</span>
+          
+          
+          <span class="code" data-ice="name"><span><a href="typedef/index.html#static-typedef-AllowedOriginProcessor">AllowedOriginProcessor</a></span></span><span class="code" data-ice="signature">(incomingOrigin: <span>string</span>): <span>boolean</span>: <span>Function</span></span>
         </p>
       </div>
       <div>

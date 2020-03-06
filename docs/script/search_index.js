@@ -174,6 +174,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/providers/common.jsx~allowedoriginprocessor",
+    "typedef/index.html#static-typedef-AllowedOriginProcessor",
+    "src/Providers/Common.jsx~AllowedOriginProcessor",
+    "typedef"
+  ],
+  [
     "src/providers/constants.jsx",
     "file/src/Providers/Constants.jsx.html",
     "src/Providers/Constants.jsx",

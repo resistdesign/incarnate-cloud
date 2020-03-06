@@ -45,6 +45,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DEP_NAMES">DEP_NAMES</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-METHODS">METHODS</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-PATH_DELIMITER">PATH_DELIMITER</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-AllowedOriginProcessor">AllowedOriginProcessor</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-HandlerResponse">HandlerResponse</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-aws">Providers/AWS</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Providers/AWS/ConfigLoader.jsx~ConfigLoader.html">ConfigLoader</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ISystemsManager">ISystemsManager</a></span></span></li>
@@ -120,12 +121,28 @@ export const getResponse = (statusCode = 200, value = undefined, headers = {}) =
   };
 };
 
-export const getCORSHeaders = (clientOrigin = &apos;&apos;) =&gt; ({
-  &apos;Access-Control-Allow-Origin&apos;: clientOrigin,
-  &apos;Access-Control-Allow-Headers&apos;: &apos;Origin, X-Requested-With, Content-Type, Accept, Authorization&apos;,
-  &apos;Access-Control-Allow-Methods&apos;: &apos;OPTIONS, HEAD, GET, POST, PUT, PATCH, DELETE&apos;,
-  &apos;Access-Control-Allow-Credentials&apos;: &apos;true&apos;
-});
+export const getCORSHeaders = (clientOrigin = &apos;&apos;, currentOrigin = &apos;&apos;) =&gt; {
+  const originProcessors = clientOrigin instanceof Array ? clientOrigin : [clientOrigin];
+  const validOrigin = originProcessors
+    .reduce((acc, o) =&gt; {
+      if (!!acc) {
+        return acc;
+      } else if (o instanceof RegExp) {
+        return !!o.test(currentOrigin) ? currentOrigin : &apos;&apos;;
+      } else if (o instanceof Function) {
+        return !!o(currentOrigin) ? currentOrigin : &apos;&apos;;
+      } else {
+        return o === currentOrigin ? o : &apos;&apos;;
+      }
+    }, &apos;&apos;);
+
+  return {
+    &apos;Access-Control-Allow-Origin&apos;: validOrigin,
+    &apos;Access-Control-Allow-Headers&apos;: &apos;Origin, X-Requested-With, Content-Type, Accept, Authorization&apos;,
+    &apos;Access-Control-Allow-Methods&apos;: &apos;OPTIONS, HEAD, GET, POST, PUT, PATCH, DELETE&apos;,
+    &apos;Access-Control-Allow-Credentials&apos;: &apos;true&apos;
+  }
+};
 
 export const getCleanHttpMethod = (method = &apos;POST&apos;) =&gt; `${method}`.toUpperCase();
 </code></pre>

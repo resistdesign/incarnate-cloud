@@ -3,7 +3,10 @@
   "httpMethod": "POST",
   "body": "[\"Arguments in JSON\"]",
   "path": "/package/service/method-name",
-  "headers": {},
+  "headers": {
+    "Content-Type": "application/json",
+    "Origin": "http://example.com"
+  },
   "multiValueHeaders": {},
   "requestContext": {
     "test": "TEST_CONTEXT",

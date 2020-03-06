@@ -5,7 +5,7 @@ import {getRequestResponse} from './Common';
  * @param {Object} config
  * @param {Object} config.incarnateConfig The incarnate configuration object.
  * @param {Array.<string>} config.allowedPaths A SECURITY measure to prevent access of values and methods outside of services.
- * @param {string} config.allowedOrigin The allowed CORS origin returned to `OPTIONS` requests.
+ * @param {string|string[]|RegExp|RegExp[]|AllowedOriginProcessor|AllowedOriginProcessor[]} config.allowedOrigin The allowed CORS origin returned to `OPTIONS` requests.
  * @param {number} config.dependencyResolutionTimeoutMS The maximum number of milliseconds allotted for resolving service dependencies. Default: 300000 (5 minutes)
  *
  * @returns {Function} The Lambda handler.

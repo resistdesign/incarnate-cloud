@@ -64,11 +64,27 @@ export const getResponse = (statusCode = 200, value = undefined, headers = {}) =
   };
 };
 
-export const getCORSHeaders = (clientOrigin = '') => ({
-  'Access-Control-Allow-Origin': clientOrigin,
-  'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
-  'Access-Control-Allow-Methods': 'OPTIONS, HEAD, GET, POST, PUT, PATCH, DELETE',
-  'Access-Control-Allow-Credentials': 'true'
-});
+export const getCORSHeaders = (clientOrigin = '', currentOrigin = '') => {
+  const originProcessors = clientOrigin instanceof Array ? clientOrigin : [clientOrigin];
+  const validOrigin = originProcessors
+    .reduce((acc, o) => {
+      if (!!acc) {
+        return acc;
+      } else if (o instanceof RegExp) {
+        return !!o.test(currentOrigin) ? currentOrigin : '';
+      } else if (o instanceof Function) {
+        return !!o(currentOrigin) ? currentOrigin : '';
+      } else {
+        return o === currentOrigin ? o : '';
+      }
+    }, '');
+
+  return {
+    'Access-Control-Allow-Origin': validOrigin,
+    'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+    'Access-Control-Allow-Methods': 'OPTIONS, HEAD, GET, POST, PUT, PATCH, DELETE',
+    'Access-Control-Allow-Credentials': 'true'
+  }
+};
 
 export const getCleanHttpMethod = (method = 'POST') => `${method}`.toUpperCase();
