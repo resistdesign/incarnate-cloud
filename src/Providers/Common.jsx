@@ -43,9 +43,16 @@ export const getRequestResponse = async ({
     ...headers,
     ...multiValueHeaders
   };
+  const incomingHeadersWithLowerCaseKeys = Object
+    .keys(incomingHeaders)
+    .reduce((acc, k) => ({
+      ...acc,
+      [k.toLowerCase()]: incomingHeaders[k]
+    }), {});
   const {
-    Origin: incomingOrigin = ''
-  } = incomingHeaders;
+    // IMPORTANT: Use lowercase header key.
+    origin: incomingOrigin = ''
+  } = incomingHeadersWithLowerCaseKeys;
   const currentOrigin = incomingOrigin instanceof Array ? incomingOrigin[0] : incomingOrigin;
   const corsHeaders = getCORSHeaders(allowedOrigin, currentOrigin);
   const getResponseWithCORS = (statusCode = 200, value = undefined, headers = {}) => {

@@ -278,6 +278,20 @@ module.exports = {
           },
           'http://example.com:5000'
         )(),
+        createTestWithAllowedOrigin(
+          [
+            'http://example.com',
+            /^.*?example\.com($|:[0-9]*$)/gmi
+          ],
+          {
+            ...MockAPIGatewayEvent,
+            headers: {
+              // TRICKY: Test lowercase origin header key.
+              origin: 'http://example.com:5000'
+            }
+          },
+          'http://example.com:5000'
+        )(),
         createTestWithAllowedOrigin([() => true])()
       ])
   },
