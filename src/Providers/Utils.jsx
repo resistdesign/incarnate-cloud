@@ -71,7 +71,7 @@ export const getCORSHeaders = (clientOrigin = '', currentOrigin = '') => {
       if (!!acc) {
         return acc;
       } else if (o instanceof RegExp) {
-        return !!o.test(currentOrigin) ? currentOrigin : '';
+        return !!currentOrigin.match(o) ? currentOrigin : '';
       } else if (o instanceof Function) {
         return !!o(currentOrigin) ? currentOrigin : '';
       } else {
